@@ -271,7 +271,7 @@
                 <button id="fb-btn" class="px-8 py-3 border border-white hover:bg-white hover:text-black font-orbitron transition-colors">PROCEED</button>
             </div>
 
-            <div id="view-summary" class="hidden absolute inset-0 z-40 bg-gray-900 flex flex-col items-center justify-center p-8">
+            <!-- <div id="view-summary" class="hidden absolute inset-0 z-40 bg-gray-900 flex flex-col items-center justify-center p-8">
                 <h2 id="sum-title" class="font-orbitron text-5xl mb-2 text-white">REPORT</h2>
                 <div id="sum-grade" class="text-9xl font-bold text-neon-blue mb-6 font-orbitron" style="text-shadow: 0 0 30px var(--neon-blue);">A</div>
                 
@@ -293,7 +293,42 @@
                     <button onclick="game.returnToLevelList()" class="px-6 py-3 border border-gray-600 hover:border-white text-gray-300 hover:text-white transition-colors">LEVEL SELECT</button>
                     <button onclick="game.replayLevel()" class="px-6 py-3 border border-gray-600 hover:border-white text-gray-300 hover:text-white transition-colors">RETRY</button>
                 </div>
+            </div> -->
+
+            <!-- added on 1/12/26 start -->
+
+            <div id="view-summary" class="hidden absolute inset-0 z-40 bg-gray-900 flex flex-col items-center justify-center p-8 fade-in">
+                <h2 id="sum-title" class="font-orbitron text-5xl mb-2 text-white text-center">REPORT</h2>
+                <div id="sum-grade" class="text-9xl font-bold text-neon-blue mb-4 font-orbitron" style="text-shadow: 0 0 30px var(--neon-blue);">A</div>
+                
+                <div class="grid grid-cols-3 gap-4 mb-6 w-full max-w-2xl bg-gray-800/50 p-4 rounded border border-gray-700">
+                    <div class="text-center">
+                        <div class="text-xs text-gray-500" data-text="score">SCORE</div>
+                        <div id="sum-score" class="text-2xl text-white font-mono">0</div>
+                    </div>
+                    <div class="text-center border-l border-gray-700">
+                        <div class="text-xs text-gray-500">MISTAKES</div>
+                        <div id="sum-mistakes" class="text-2xl text-red-400 font-mono">0</div>
+                    </div>
+                    <div class="text-center border-l border-gray-700">
+                        <div class="text-xs text-gray-500" data-text="result">RESULT</div>
+                        <div id="sum-result" class="text-2xl text-green-400 font-mono">PASS</div>
+                    </div>
+                </div>
+
+                <div id="sum-resources-container" class="w-full max-w-2xl mb-8 hidden">
+                    <h3 class="font-orbitron text-sm text-neon-blue mb-2 text-center">RELEVANT LEGAL RESOURCES</h3>
+                    <div id="sum-resources-list" class="grid grid-cols-1 gap-2 max-h-32 overflow-y-auto custom-scroll">
+                        </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <button onclick="game.returnToLevelList()" class="px-6 py-3 border border-gray-600 hover:border-white text-gray-300 hover:text-white transition-colors" data-text="levels">LEVEL SELECT</button>
+                    <button onclick="game.replayLevel()" class="px-6 py-3 border border-gray-600 hover:border-white text-gray-300 hover:text-white transition-colors" data-text="retry">RETRY</button>
+                </div>
             </div>
+
+            <!-- end -->
 
             <!-- <div id="view-dashboard" class="hidden absolute inset-0 z-50 bg-black/95 flex flex-col p-8 fade-in">
                 <div class="flex justify-between items-center mb-8 border-b border-gray-800 pb-4">
