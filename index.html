@@ -1319,27 +1319,92 @@ const game = {
         });
     },
 
+    // showDashboard: () => {
+    //     game.hideAll();
+    //     document.getElementById('view-dashboard').classList.remove('hidden');
+    //     document.getElementById('view-dashboard').classList.add('flex');
+        
+    //     const list = document.getElementById('leaderboard-list');
+    //     list.innerHTML = '';
+    //     game.state.leaderboard.sort((a,b) => b.score - a.score).slice(0, 10).forEach((entry, i) => {
+    //         list.innerHTML += `<div class="flex justify-between border-b border-gray-700 pb-1 font-mono text-sm"><span class="text-neon-blue">${i+1}. ${entry.name}</span><span class="text-white">${entry.score} PTS</span></div>`;
+    //     });
+
+    //     const grid = document.getElementById('dash-achievements');
+    //     grid.innerHTML = '';
+    //     Object.entries(content.achievements).forEach(([id, data]) => {
+    //         const unlocked = game.state.unlocked.has(id);
+    //         const card = document.createElement('div');
+    //         card.className = `p-3 rounded border ${unlocked ? 'border-neon-yellow bg-yellow-900/20' : 'border-gray-800 bg-gray-900 opacity-50'}`;
+    //         card.innerHTML = `<div class="font-bold text-sm ${unlocked ? 'text-neon-yellow' : 'text-gray-500'}">${data.title}</div><div class="text-xs text-gray-400">${data.desc}</div>`;
+    //         grid.appendChild(card);
+    //     });
+    // },
+
+    // added on 1/12/26 start
+
     showDashboard: () => {
         game.hideAll();
         document.getElementById('view-dashboard').classList.remove('hidden');
         document.getElementById('view-dashboard').classList.add('flex');
         
+        // 1. POPULATE LEADERBOARD (Left Column)
         const list = document.getElementById('leaderboard-list');
         list.innerHTML = '';
-        game.state.leaderboard.sort((a,b) => b.score - a.score).slice(0, 10).forEach((entry, i) => {
-            list.innerHTML += `<div class="flex justify-between border-b border-gray-700 pb-1 font-mono text-sm"><span class="text-neon-blue">${i+1}. ${entry.name}</span><span class="text-white">${entry.score} PTS</span></div>`;
-        });
+        
+        // Sort by score (High to Low) and take top 20
+        const sortedBoard = [...game.state.leaderboard].sort((a,b) => b.score - a.score).slice(0, 20);
+        
+        if (sortedBoard.length === 0) {
+            list.innerHTML = `<div class="text-gray-500 font-mono text-sm italic p-2">No records found. Complete a mission to rank.</div>`;
+        } else {
+            sortedBoard.forEach((entry, i) => {
+                // Highlight the current user's score if names match
+                const isMe = entry.name === game.state.name;
+                list.innerHTML += `
+                    <div class="flex justify-between border-b border-gray-800 pb-2 mb-2 font-mono text-sm ${isMe ? 'bg-blue-900/30 p-1 rounded' : ''}">
+                        <div class="flex gap-3">
+                            <span class="text-neon-blue w-6">${i+1}.</span>
+                            <span class="${isMe ? 'text-white font-bold' : 'text-gray-300'}">${entry.name}</span>
+                        </div>
+                        <span class="text-neon-yellow">${entry.score} PTS</span>
+                    </div>`;
+            });
+        }
 
+        // 2. POPULATE TROPHIES (Top Right Panel)
         const grid = document.getElementById('dash-achievements');
         grid.innerHTML = '';
+        
         Object.entries(content.achievements).forEach(([id, data]) => {
             const unlocked = game.state.unlocked.has(id);
+            
+            // Logic for Locked vs Unlocked styling
+            const borderColor = unlocked ? 'border-neon-yellow' : 'border-gray-800';
+            const bgColor = unlocked ? 'bg-yellow-900/20' : 'bg-black/40';
+            const titleColor = unlocked ? 'text-neon-yellow' : 'text-gray-600';
+            const checkmark = unlocked ? '✓' : '🔒';
+            const description = unlocked ? data.desc : '??????';
+
             const card = document.createElement('div');
-            card.className = `p-3 rounded border ${unlocked ? 'border-neon-yellow bg-yellow-900/20' : 'border-gray-800 bg-gray-900 opacity-50'}`;
-            card.innerHTML = `<div class="font-bold text-sm ${unlocked ? 'text-neon-yellow' : 'text-gray-500'}">${data.title}</div><div class="text-xs text-gray-400">${data.desc}</div>`;
+            // Fixed height ensures the grid stays aligned
+            card.className = `p-3 rounded border ${borderColor} ${bgColor} flex flex-col justify-between h-24 transition-all`;
+            
+            card.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <span class="font-bold text-xs ${titleColor} font-orbitron">${data.title}</span>
+                    <span class="text-xs ${titleColor}">${checkmark}</span>
+                </div>
+                <div class="text-[10px] text-gray-400 font-mono leading-tight mt-1">
+                    ${description}
+                </div>
+            `;
             grid.appendChild(card);
         });
     },
+
+
+    // end
 
     startLevel: (lvl) => {
         game.state.currentLvl = lvl;
