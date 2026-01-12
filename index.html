@@ -265,31 +265,7 @@
                 </div>
                 <p id="fb-desc" class="text-gray-300 mb-10 max-w-2xl text-lg font-light leading-relaxed"></p>
                 <!-- added on 1/12/26 start -->
-                <div id="fb-resources" class="mb-8"></div> ```
-
-                **D. Update Dashboard Layout**
-                Replace the content inside `#view-dashboard` with this split layout to include the **Legal Library**:
-                
-                ```html
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 h-full overflow-hidden">
-                    <div class="bg-gray-900 p-6 rounded border border-gray-700 overflow-y-auto custom-scroll">
-                        <h3 class="font-orbitron text-white mb-4" data-text="resources_title">LEGAL LIBRARY</h3>
-                        <div class="space-y-4">
-                            <a href="https://www.aclu.org/know-your-rights" target="_blank" class="block p-3 border border-gray-700 hover:border-neon-blue text-gray-300 hover:text-white transition-colors">
-                                <div class="font-bold">ACLU: Know Your Rights</div>
-                                <div class="text-xs text-gray-500">Official guides for police encounters.</div>
-                            </a>
-                            <a href="https://www.oyez.org/" target="_blank" class="block p-3 border border-gray-700 hover:border-neon-blue text-gray-300 hover:text-white transition-colors">
-                                <div class="font-bold">Oyez.org</div>
-                                <div class="text-xs text-gray-500">Supreme Court case summaries.</div>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="bg-gray-900 p-6 rounded border border-gray-700 overflow-y-auto custom-scroll">
-                        <h3 class="font-orbitron text-white mb-4" data-text="top_operators">TOP OPERATORS</h3>
-                        <div id="leaderboard-list" class="space-y-2"></div>
-                    </div>
-                </div>
+                <div id="fb-resources" class="mb-8"></div> 
 
                 <!-- end -->
                 <button id="fb-btn" class="px-8 py-3 border border-white hover:bg-white hover:text-black font-orbitron transition-colors">PROCEED</button>
@@ -319,7 +295,7 @@
                 </div>
             </div>
 
-            <div id="view-dashboard" class="hidden absolute inset-0 z-50 bg-black/95 flex flex-col p-8 fade-in">
+            <!-- <div id="view-dashboard" class="hidden absolute inset-0 z-50 bg-black/95 flex flex-col p-8 fade-in">
                 <div class="flex justify-between items-center mb-8 border-b border-gray-800 pb-4">
                     <h2 class="font-orbitron text-3xl text-neon-blue">LEADERBOARD</h2>
                     <button onclick="game.showModules()" class="text-gray-400 hover:text-white text-2xl">&times;</button>
@@ -338,7 +314,78 @@
                         </div>
                     </div>
                 </div>
+            </div> -->
+
+            <!-- added on 1/12/26 start -->
+
+            <div id="view-dashboard" class="hidden absolute inset-0 z-50 bg-black/95 flex flex-col p-8 fade-in">
+                
+                <div class="flex justify-between items-center mb-6 border-b border-gray-800 pb-4 shrink-0">
+                    <div class="flex items-center gap-4">
+                        <h2 class="font-orbitron text-3xl text-neon-blue" data-text="dashboard_title">OPERATOR DASHBOARD</h2>
+                        <span class="text-xs font-mono text-gray-500 border border-gray-700 px-2 py-1 rounded">SECURE CONNECTION</span>
+                    </div>
+                    <button onclick="game.showModules()" class="text-gray-400 hover:text-white text-2xl transition-transform hover:scale-110">&times;</button>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full overflow-hidden pb-2">
+                    
+                    <div class="bg-gray-900/80 p-5 rounded-lg border border-gray-700 flex flex-col overflow-hidden shadow-lg relative group">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neon-blue to-transparent opacity-50"></div>
+                        
+                        <h3 class="font-orbitron text-white mb-4 shrink-0 flex items-center gap-2" data-text="top_operators">
+                            <span>🏆</span> TOP OPERATORS
+                        </h3>
+                        
+                        <div id="leaderboard-list" class="space-y-2 overflow-y-auto custom-scroll flex-grow pr-2">
+                            </div>
+                    </div>
+
+                    <div class="lg:col-span-2 flex flex-col gap-6 overflow-hidden">
+                        
+                        <div class="bg-gray-900/80 p-5 rounded-lg border border-gray-700 flex-1 flex flex-col overflow-hidden shadow-lg relative">
+                            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neon-yellow to-transparent opacity-50"></div>
+                            
+                            <h3 class="font-orbitron text-white mb-4 shrink-0 flex items-center gap-2" data-text="achievements_title">
+                                <span>🎖️</span> ACHIEVEMENTS
+                            </h3>
+                            
+                            <div id="dash-achievements" class="grid grid-cols-2 sm:grid-cols-3 gap-3 overflow-y-auto custom-scroll pr-2">
+                                </div>
+                        </div>
+
+                        <div class="bg-gray-900/80 p-5 rounded-lg border border-gray-700 h-48 shrink-0 flex flex-col shadow-lg relative">
+                            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neon-green to-transparent opacity-50"></div>
+                            
+                            <h3 class="font-orbitron text-white mb-4 shrink-0 flex items-center gap-2" data-text="resources_title">
+                                <span>📚</span> LEGAL LIBRARY
+                            </h3>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 overflow-y-auto custom-scroll pr-2">
+                                <a href="https://www.aclu.org/know-your-rights" target="_blank" class="flex items-center justify-between p-3 border border-gray-700 hover:border-neon-blue hover:bg-blue-900/20 text-gray-300 hover:text-white transition-all rounded group">
+                                    <span class="font-bold text-sm">ACLU: Know Your Rights</span>
+                                    <span class="text-neon-blue opacity-0 group-hover:opacity-100 transition-opacity">↗</span>
+                                </a>
+                                <a href="https://www.oyez.org/" target="_blank" class="flex items-center justify-between p-3 border border-gray-700 hover:border-neon-blue hover:bg-blue-900/20 text-gray-300 hover:text-white transition-all rounded group">
+                                    <span class="font-bold text-sm">Supreme Court Cases</span>
+                                    <span class="text-neon-blue opacity-0 group-hover:opacity-100 transition-opacity">↗</span>
+                                </a>
+                                <a href="https://www.dol.gov/agencies/whd/flsa" target="_blank" class="flex items-center justify-between p-3 border border-gray-700 hover:border-neon-blue hover:bg-blue-900/20 text-gray-300 hover:text-white transition-all rounded group">
+                                    <span class="font-bold text-sm">Labor Laws (FLSA)</span>
+                                    <span class="text-neon-blue opacity-0 group-hover:opacity-100 transition-opacity">↗</span>
+                                </a>
+                                <a href="https://www.osha.gov/workers" target="_blank" class="flex items-center justify-between p-3 border border-gray-700 hover:border-neon-blue hover:bg-blue-900/20 text-gray-300 hover:text-white transition-all rounded group">
+                                    <span class="font-bold text-sm">OSHA Worker Safety</span>
+                                    <span class="text-neon-blue opacity-0 group-hover:opacity-100 transition-opacity">↗</span>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </div>
+
+            <!-- end -->
 
         </main>
     </div>
