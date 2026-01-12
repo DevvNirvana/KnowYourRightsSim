@@ -1449,6 +1449,10 @@ const game = {
         game.state.currentNode = lvl.nodes.start;
         game.state.lives = 3;
         game.state.mistakes = 0;
+
+        // RESET RESOURCES FOR NEW LEVEL start
+        game.state.sessionResources = []; // <--- end
+
         game.updateHUD();
 
         game.hideAll();
