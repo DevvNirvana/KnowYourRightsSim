@@ -1599,6 +1599,39 @@ const game = {
         document.getElementById('sum-score').innerText = game.state.score;
         document.getElementById('sum-mistakes').innerText = game.state.mistakes;
         document.getElementById('sum-result').innerText = win ? "PASSED" : "FAILED";
+
+        // --- NEW: RENDER RESOURCES ---
+        const resContainer = document.getElementById('sum-resources-container');
+        const resList = document.getElementById('sum-resources-list');
+        resList.innerHTML = '';
+
+        if (game.state.sessionResources.length > 0) {
+            resContainer.classList.remove('hidden'); // Show container
+            
+            game.state.sessionResources.forEach(res => {
+                const titleText = game.getText(res.title);
+                
+                const link = document.createElement('a');
+                link.href = res.url;
+                link.target = "_blank";
+                link.className = "block p-3 bg-gray-900 border border-gray-700 hover:border-neon-blue hover:bg-blue-900/20 text-gray-300 hover:text-white transition-all rounded flex justify-between items-center group";
+                
+                link.innerHTML = `
+                    <div>
+                        <span class="text-xs text-neon-blue font-bold block">${res.desc}</span>
+                        <span class="text-sm">${titleText}</span>
+                    </div>
+                    <span class="text-neon-blue opacity-50 group-hover:opacity-100">↗</span>
+                `;
+                resList.appendChild(link);
+            });
+        } else {
+            resContainer.classList.add('hidden'); // Hide if no resources found
+        }
+        // ----------------------------- end
+
+
+
     },
 
     hideAll: () => {
