@@ -264,6 +264,34 @@
                     </div>
                 </div>
                 <p id="fb-desc" class="text-gray-300 mb-10 max-w-2xl text-lg font-light leading-relaxed"></p>
+                <!-- added on 1/12/26 start -->
+                <div id="fb-resources" class="mb-8"></div> ```
+
+                **D. Update Dashboard Layout**
+                Replace the content inside `#view-dashboard` with this split layout to include the **Legal Library**:
+                
+                ```html
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 h-full overflow-hidden">
+                    <div class="bg-gray-900 p-6 rounded border border-gray-700 overflow-y-auto custom-scroll">
+                        <h3 class="font-orbitron text-white mb-4" data-text="resources_title">LEGAL LIBRARY</h3>
+                        <div class="space-y-4">
+                            <a href="https://www.aclu.org/know-your-rights" target="_blank" class="block p-3 border border-gray-700 hover:border-neon-blue text-gray-300 hover:text-white transition-colors">
+                                <div class="font-bold">ACLU: Know Your Rights</div>
+                                <div class="text-xs text-gray-500">Official guides for police encounters.</div>
+                            </a>
+                            <a href="https://www.oyez.org/" target="_blank" class="block p-3 border border-gray-700 hover:border-neon-blue text-gray-300 hover:text-white transition-colors">
+                                <div class="font-bold">Oyez.org</div>
+                                <div class="text-xs text-gray-500">Supreme Court case summaries.</div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900 p-6 rounded border border-gray-700 overflow-y-auto custom-scroll">
+                        <h3 class="font-orbitron text-white mb-4" data-text="top_operators">TOP OPERATORS</h3>
+                        <div id="leaderboard-list" class="space-y-2"></div>
+                    </div>
+                </div>
+
+                <!-- end -->
                 <button id="fb-btn" class="px-8 py-3 border border-white hover:bg-white hover:text-black font-orbitron transition-colors">PROCEED</button>
             </div>
 
