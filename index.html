@@ -1526,6 +1526,23 @@ const game = {
         if(c.type === 'correct') { audio.play('correct'); game.state.score += 100; }
         else if (c.type === 'neutral') { audio.play('click'); game.state.score += 50; }
         else { audio.play('wrong'); game.state.lives--; game.state.mistakes++; }
+
+        // --- NEW: COLLECT RESOURCE ---
+        if (c.fb && c.fb.url) {
+            // Only add if not already in list to avoid duplicates
+            const exists = game.state.sessionResources.some(r => r.url === c.fb.url);
+            if (!exists) {
+                game.state.sessionResources.push({
+                    title: c.fb.title, // e.g. "CORRECT" or "4TH AMENDMENT"
+                    desc: c.fb.cite,   // e.g. "Terry v. Ohio"
+                    url: c.fb.url
+                });
+            }
+        }
+        // ----------------------------- end
+
+
+
         game.updateHUD();
 
         setTimeout(() => game.showFeedback(c), 600);
