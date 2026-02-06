@@ -191,8 +191,8 @@
         <main class="flex-grow glass-panel rounded-b-lg overflow-hidden relative flex flex-col">
             
             <div id="view-start" class="absolute inset-0 flex flex-col items-center justify-center z-50 bg-black/80 backdrop-blur-sm">
-                <h1 class="font-orbitron text-5xl md:text-7xl text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-white mb-2">KNOW YOUR RIGHTS</h1>
-                <p class="font-mono text-gray-400 mb-8 text-center max-w-lg">TACTICAL LEGAL SIMULATOR</p>
+                <h1 class="font-orbitron text-5xl md:text-7xl text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-white mb-2" data-text="title">KNOW YOUR RIGHTS</h1>
+                <p class="font-mono text-gray-400 mb-8 text-center max-w-lg" data-text="subtitle">TACTICAL LEGAL SIMULATOR</p>
 
                 <!-- Added on 1/12/26 start -->
                 <div class="text-xs text-gray-500 border border-gray-800 p-2 mb-6 max-w-md text-center bg-black/50" data-text="disclaimer">
@@ -203,14 +203,14 @@
                 
                 <div class="flex flex-col gap-4 w-full max-w-xs">
                     <input type="text" id="input-name" placeholder="ENTER CODENAME" class="bg-gray-900 border border-gray-600 p-3 text-white font-mono text-center focus:border-neon-blue outline-none rounded" maxlength="12">
-                    <button onclick="game.init()" class="px-10 py-4 bg-blue-900/30 border border-blue-500 text-blue-100 font-orbitron hover:bg-blue-500 hover:text-white transition-all tracking-widest">INITIALIZE</button>
+                    <button onclick="game.init()" class="px-10 py-4 bg-blue-900/30 border border-blue-500 text-blue-100 font-orbitron hover:bg-blue-500 hover:text-white transition-all tracking-widest" data-text="init">INITIALIZE</button>
                 </div>
             </div>
 
             <div id="view-modules" class="hidden absolute inset-0 p-8 flex flex-col">
                 <div class="flex justify-between items-center mb-6 border-b border-gray-800 pb-2">
-                    <h2 class="font-orbitron text-3xl text-white">SELECT MODULE</h2>
-                    <button onclick="game.showDashboard()" class="font-mono text-sm text-neon-blue hover:text-white border border-neon-blue px-3 py-1 rounded">LEADERBOARD</button>
+                    <h2 class="font-orbitron text-3xl text-white" data-text="select_module">SELECT MODULE</h2>
+                    <button onclick="game.showDashboard()" class="font-mono text-sm text-neon-blue hover:text-white border border-neon-blue px-3 py-1 rounded" data-text="dashboard">LEADERBOARD</button>
                 </div>
                 <div id="modules-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6 overflow-y-auto custom-scroll p-2">
                 </div>
@@ -218,8 +218,8 @@
 
             <div id="view-levels" class="hidden absolute inset-0 p-8 flex flex-col">
                 <div class="flex items-center gap-4 mb-6 border-b border-gray-800 pb-2">
-                    <button onclick="game.showModules()" class="text-gray-500 hover:text-white transition-colors">← BACK</button>
-                    <h2 id="lvl-select-title" class="font-orbitron text-3xl text-white">LEVELS</h2>
+                    <button onclick="game.showModules()" class="text-gray-500 hover:text-white transition-colors" data-text="back">← BACK</button>
+                    <h2 id="lvl-select-title" class="font-orbitron text-3xl text-white" data-text="levels">LEVELS</h2>
                 </div>
                 <div id="level-list" class="space-y-3 overflow-y-auto custom-scroll p-2">
                 </div>
@@ -268,7 +268,7 @@
                 <div id="fb-resources" class="mb-8"></div> 
 
                 <!-- end -->
-                <button id="fb-btn" class="px-8 py-3 border border-white hover:bg-white hover:text-black font-orbitron transition-colors">PROCEED</button>
+                <button id="fb-btn" class="px-8 py-3 border border-white hover:bg-white hover:text-black font-orbitron transition-colors" data-text="proceed">PROCEED</button>
             </div>
 
             <!-- <div id="view-summary" class="hidden absolute inset-0 z-40 bg-gray-900 flex flex-col items-center justify-center p-8">
@@ -307,11 +307,11 @@
                         <div id="sum-score" class="text-2xl text-white font-mono">0</div>
                     </div>
                     <div class="text-center border-l border-gray-700">
-                        <div class="text-xs text-gray-500">MISTAKES</div>
+                        <div class="text-xs text-gray-500" data-text="mistakes">MISTAKES</div>
                         <div id="sum-mistakes" class="text-2xl text-red-400 font-mono">0</div>
                     </div>
                     <div class="text-center border-l border-gray-700">
-                        <div class="text-xs text-gray-500" data-text="result">RESULT</div>
+                        <div class="text-xs text-gray-500" data-text="result" data-text="result">RESULT</div>
                         <div id="sum-result" class="text-2xl text-green-400 font-mono">PASS</div>
                     </div>
                 </div>
