@@ -1305,6 +1305,9 @@
 const game = {
     state: {
         name: "GUEST",
+        // added on 02/05/26 start
+        lang: 'en',
+        // end
         score: 0,
         lives: 3,
         mistakes: 0,
@@ -1328,6 +1331,24 @@ const game = {
         audio.init();
         game.load();
     },
+
+    // added on 02/05/26 start
+    toggleLang: () => {
+        game.state.lang = game.state.lang === 'en' ? 'es' : 'en';
+        game.updateLang();
+    },
+
+    updateLang: () => {
+        if(!document.getElementById('view-modules').classList.contains(hidden)) game.showModules();
+        if(!document.getElementById('view-game').classList.contains('hidden')) game.renderNode();
+    },
+
+    getText: (obj) => {
+        if(!obj) return "";
+        if(typeof obj === 'string') return obj;
+        return obj[game.state.lang] || obj['en'];
+    },
+        // end
 
     showModules: () => {
         game.hideAll();
