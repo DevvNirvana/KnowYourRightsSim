@@ -171,15 +171,15 @@
             <!-- /end -->
             <div class="flex items-center gap-6 font-mono text-sm">
                 <div class="text-right hidden sm:block">
-                    <div class="text-gray-500 text-[10px]">OPERATOR</div>
+                    <div class="text-gray-500 text-[10px]" data-text="operator">OPERATOR</div>
                     <div id="hud-name" class="text-neon-yellow text-lg leading-none">GUEST</div>
                 </div>
                 <div class="text-right hidden sm:block">
-                    <div class="text-gray-500 text-[10px]">SCORE</div>
+                    <div class="text-gray-500 text-[10px]" data-text="score">SCORE</div>
                     <div id="hud-score" class="text-white text-lg leading-none">0</div>
                 </div>
                 <div class="text-right hidden sm:block">
-                    <div class="text-gray-500 text-[10px]">INTEGRITY</div>
+                    <div class="text-gray-500 text-[10px]" data-text="integrity">INTEGRITY</div>
                     <div id="hud-lives" class="text-neon-red text-lg leading-none">❤️❤️❤️</div>
                 </div>
                 <button id="btn-audio" onclick="audio.toggle()" class="border border-gray-600 p-2 rounded hover:border-white text-gray-400 hover:text-white transition-colors">
@@ -1771,6 +1771,12 @@ const game = {
 
     //end
 
+    getText: (obj) => {
+        if(!obj) return "";
+        if(typeof obj === 'string') return obj;
+        return obj[game.state.lang] || obj['en'];
+    },
+
     init: () => {
         const nameInput = document.getElementById('input-name').value.trim().toUpperCase();
         if(nameInput) game.state.name = nameInput;
@@ -1831,40 +1837,32 @@ const game = {
             game.showDashboard();
         }
         
-        // Update Summary Screen if visible
+        // Update Summary Screen Titles Live
         if(!document.getElementById('view-summary').classList.contains('hidden')) {
-             const isWin = document.getElementById('sum-result').innerText === textData['en'].pass || document.getElementById('sum-result').innerText === textData['es'].pass; 
-             const sumTitleKey = document.getElementById('sum-title').innerText.includes("ACCOMPLISHED") || document.getElementById('sum-title').innerText.includes("CUMPLIDA") ? 'mission_acc' : 'mission_fail';
-             const sumResultKey = document.getElementById('sum-result').innerText.includes("PASSED") || document.getElementById('sum-result').innerText.includes("APROBADO") ? 'pass' : 'fail';
+             // Simple check if we won or lost based on current text
+             const isWin = document.getElementById('sum-title').innerText.includes("ACCOMPLISHED") || document.getElementById('sum-title').innerText.includes("CUMPLIDA");
              
-             document.getElementById('sum-title').innerText = textData[l][sumTitleKey];
-             document.getElementById('sum-result').innerText = textData[l][sumResultKey];
+             document.getElementById('sum-title').innerText = isWin ? textData[l].mission_acc : textData[l].mission_fail;
+             document.getElementById('sum-result').innerText = isWin ? textData[l].pass : textData[l].fail;
              
-             // Update resources list with translated text
-             if(game.state.sessionResources.length > 0) {
-                 const resList = document.getElementById('sum-resources-list');
-                 // Clear list
-                 resList.innerHTML = '';
-                 // Re-populate with translated text
-                 game.state.sessionResources.forEach(res => {
-                    const titleText = game.getText(res.title);
-                    const descText = game.getText(res.desc);
-                    
-                    const link = document.createElement('a');
-                    link.href = res.url;
-                    link.target = "_blank";
-                    link.className = "block p-3 bg-gray-900 border border-gray-700 hover:border-neon-blue hover:bg-blue-900/20 text-gray-300 hover:text-white transition-all rounded flex justify-between items-center group";
-                    
-                    link.innerHTML = `
-                        <div>
-                            <span class="text-xs text-neon-blue font-bold block">${descText}</span>
-                            <span class="text-sm">${titleText}</span>
-                        </div>
-                        <span class="text-neon-blue opacity-50 group-hover:opacity-100">↗</span>
-                    `;
-                    resList.appendChild(link);
-                 });
-             }
+             // Refresh resources to update language
+             // (We need to clear and re-render them to get the new language)
+             const resList = document.getElementById('sum-resources-list');
+             resList.innerHTML = '';
+             game.state.sessionResources.forEach(res => {
+                const titleText = game.getText(res.title); 
+                // Note: res.title might be a string if pushed from English pack, 
+                // but this ensures we try to translate if possible.
+                // To truly fix dynamic resource translation, we'd need to save keys, not strings.
+                // But this will prevent the crash.
+                 
+                const link = document.createElement('a');
+                link.href = res.url;
+                link.target = "_blank";
+                link.className = "block p-3 bg-gray-900 border border-gray-700 hover:border-neon-blue hover:bg-blue-900/20 text-gray-300 hover:text-white transition-all rounded flex justify-between items-center group";
+                link.innerHTML = `<div><span class="text-xs text-neon-blue font-bold block">LEGAL REF</span><span class="text-sm">${titleText}</span></div><span class="text-neon-blue opacity-50 group-hover:opacity-100">↗</span>`;
+                resList.appendChild(link);
+             });
         }
     },
 
@@ -2077,7 +2075,9 @@ const game = {
 
             timer.start(15000, () => {
                 const badChoice = node.choices.find(c => c.type === 'wrong') || node.choices[0];
-                game.handleChoice({ ...badChoice, fb: { title: "TIME EXPIRED", legal: "PANIC", effect: "FAIL", desc: "You froze. Hesitation can be interpreted as guilt." } });
+                const panicTitle = game.state.lang === 'en' ? "TIME EXPIRED" : "TIEMPO AGOTADO";
+                const panicDesc = game.state.lang === 'en' ? "You froze." : "Te congelaste.";
+                game.handleChoice({ ...badChoice, fb: { title: panicTitle, legal: "PANIC", effect: "FAIL", desc: panicDesc } });
             });
         },
 
@@ -2152,12 +2152,14 @@ const game = {
             else grade = 'B';
         }
 
-        document.getElementById('sum-title').innerText = win ? "MISSION ACCOMPLISHED" : "MISSION FAILED";
+        const l = game.state.lang;
+
+        document.getElementById('sum-title').innerText = win ? textData[l].mission_acc : textData[l].mission_fail;
         document.getElementById('sum-grade').innerText = grade;
         document.getElementById('sum-grade').className = `text-9xl font-bold mb-6 font-orbitron ${win ? 'text-neon-blue' : 'text-red-600'}`;
         document.getElementById('sum-score').innerText = game.state.score;
         document.getElementById('sum-mistakes').innerText = game.state.mistakes;
-        document.getElementById('sum-result').innerText = win ? "PASSED" : "FAILED";
+        document.getElementById('sum-result').innerText = win ? textData[l].pass : textData[l].fail;
 
         // --- NEW: RENDER RESOURCES ---
         const resContainer = document.getElementById('sum-resources-container');
@@ -2169,7 +2171,7 @@ const game = {
             
             game.state.sessionResources.forEach(res => {
                 const titleText = game.getText(res.title);
-                
+                const descText = game.getText(res.desc);
                 const link = document.createElement('a');
                 link.href = res.url;
                 link.target = "_blank";
