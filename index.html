@@ -508,8 +508,8 @@
 
     /* ================= GAME CONTENT ================= */
 
-    
-    const content = {
+    /* ================= ENGLISH CONTENT PACK ================= */
+    const content_en = {
         achievements: {
             stonewall: { title: "THE SHIELD", desc: "Refused an unlawful search." },
             castle: { title: "CASTLE DOCTRINE", desc: "Denied entry to home." },
@@ -1301,6 +1301,7 @@
                 ]
             };
 
+    
 /* ================= GAME ENGINE ================= */
 const game = {
     state: {
@@ -1322,6 +1323,16 @@ const game = {
         leaderboard: []
     },
 
+    //added on 5th feb 2026 start
+    // --- NEW: CONTENT MANAGER ---
+    // This function decides which content pack to use based on current language
+    getContent: () => {
+        return game.state.lang === 'es' ? content_es : content_en;
+    },
+
+
+    //end
+
     init: () => {
         const nameInput = document.getElementById('input-name').value.trim().toUpperCase();
         if(nameInput) game.state.name = nameInput;
@@ -1335,19 +1346,62 @@ const game = {
     // added on 02/05/26 start
     toggleLang: () => {
         game.state.lang = game.state.lang === 'en' ? 'es' : 'en';
-        game.updateLang();
+
+        // 2. Update Static UI (Buttons, Headers)
+        const l = game.state.lang;
+        document.querySelectorAll('[data-text]').forEach(el => {
+            const key = el.getAttribute('data-text');
+            if(textData[l][key]) el.innerHTML = textData[l][key];
+        });
+
+        // 3. Force Reload of Current View with New Content
+        // We re-call the render functions, which will now pull from the new language pack
+        if(!document.getElementById('view-modules').classList.contains('hidden')) {
+            game.showModules();
+        }
+        else if(!document.getElementById('view-levels').classList.contains('hidden')) {
+            // Find the equivalent module in the new language to keep context
+            const currentModId = game.state.currentMod.id;
+            const newMod = game.getContent().modules.find(m => m.id === currentModId);
+            game.showLevels(newMod);
+        }
+        else if(!document.getElementById('view-game').classList.contains('hidden')) {
+            const modId = game.state.currentMod.id;
+            const lvlId = game.state.currentLvl.id;
+
+            // Find new data structure
+            const newMod = game.getContent().modules.find(m => m.id === modId);
+            const newLvl = newMod.levles.find(l => l.id === lvlId);
+
+            // Map the current node ID (e.g., 'start', 'search') to the new level
+            // Note: This relies on your node keys (start:, search:) being identical in both files
+            const nodeId = Object.keys(game.state.currentLvl.nodes).find(key => game.state.currentLvl.nodes[key] === game.state.currentNode);
+
+            // Update State pointers
+            game.state.currentMod = newMod;
+            game.state.currentLvl = newLvl;
+            game.state.currentNode = newLvl.nodes[nodeId] || newLvl.nodes.start // Fallback
+
+            // re-render
+            document.getElementById('game-title').textContent = newLvl.title;
+            game.renderNode();
+        }
+        else if(!document.getElementById('view-dashboard').classList.contains('hidden')) {
+            game.showDashboard();
+        }
+        // game.updateLang();
     },
 
-    updateLang: () => {
-        if(!document.getElementById('view-modules').classList.contains(hidden)) game.showModules();
-        if(!document.getElementById('view-game').classList.contains('hidden')) game.renderNode();
-    },
+    // updateLang: () => {
+    //     if(!document.getElementById('view-modules').classList.contains(hidden)) game.showModules();
+    //     if(!document.getElementById('view-game').classList.contains('hidden')) game.renderNode();
+    // },
 
-    getText: (obj) => {
-        if(!obj) return "";
-        if(typeof obj === 'string') return obj;
-        return obj[game.state.lang] || obj['en'];
-    },
+    // getText: (obj) => {
+    //     if(!obj) return "";
+    //     if(typeof obj === 'string') return obj;
+    //     return obj[game.state.lang] || obj['en'];
+    // },
         // end
 
     showModules: () => {
@@ -1358,7 +1412,7 @@ const game = {
         const grid = document.getElementById('modules-grid');
         grid.innerHTML = '';
         
-        content.modules.forEach(mod => {
+        game.getContent().modules.forEach(mod => {
             const btn = document.createElement('button');
             btn.className = "module-card p-6 rounded-lg text-left flex flex-col justify-between h-40 group";
             btn.innerHTML = `<div><div class="text-3xl mb-2">${mod.icon}</div><h3 class="font-orbitron text-xl text-white group-hover:text-neon-blue">${mod.title}</h3></div><p class="font-mono text-xs text-gray-400">${mod.desc}</p>`;
@@ -1443,7 +1497,7 @@ const game = {
         const grid = document.getElementById('dash-achievements');
         grid.innerHTML = '';
         
-        Object.entries(content.achievements).forEach(([id, data]) => {
+        Object.entries(game.getContent().achievements).forEach(([id, data]) => {
             const unlocked = game.state.unlocked.has(id);
             
             // Logic for Locked vs Unlocked styling
@@ -1682,7 +1736,7 @@ const game = {
         if(!game.state.unlocked.has(id)) {
             game.state.unlocked.add(id);
             const toast = document.getElementById('achievement-toast');
-            document.getElementById('toast-msg').innerText = content.achievements[id].title;
+            document.getElementById('toast-msg').innerText = game.getContent().achievements[id].title;
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3000);
             game.save();
