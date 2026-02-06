@@ -1301,7 +1301,414 @@
                 ]
             };
 
-    
+    /* ================= SPANISH CONTENT PACK ================= */
+    const content_es = {
+        achievements: {
+            stonewall: { title: "EL ESCUDO", desc: "Rechazó un registro ilegal." },
+            castle: { title: "DOCTRINA CASTILLO", desc: "Negó entrada al hogar." },
+            camera: { title: "EL TESTIGO", desc: "Grabó actividad policial." },
+            union: { title: "FUERZA LABORAL", desc: "Previno robo de salario." },
+            silent: { title: "LA QUINTA", desc: "Ejerció derecho a guardar silencio." },
+            attorney: { title: "ASESORÍA LEGAL", desc: "Solicitó un abogado." },
+            peaceful: { title: "ASAMBLEA", desc: "Protegió derechos de protesta." },
+            whistleblower: { title: "BUSCADOR DE VERDAD", desc: "Reportó violaciones laborales." }
+        },
+        modules: [
+            {
+                id: 'police', title: 'FUERZAS DEL ORDEN', icon: '🚨', desc: 'Paradas de tráfico, encuentros.', art: 'art-police',
+                levels: [
+                    {
+                        id: 'traffic', title: 'Parada de Tráfico',
+                        nodes: {
+                            start: {
+                                text: "Vas conduciendo a casa. De repente, ves luces rojas y azules en tu espejo. Te están deteniendo. ¿Cuál es tu primer movimiento?",
+                                img: 'https://dl.dropboxusercontent.com/scl/fi/dgsdrifu6x1zvrcpmjvda/View-from-Driver-s-Seat.png?rlkey=t3qff09u57fatkrcxqi9f54bi&st=w2k53z9b',
+                                choices: [
+                                    { 
+                                        text: "Detenerse a la derecha tan pronto sea seguro, encender luz interior.", type: 'correct', next: 'id', 
+                                        fb: { title: "PROCEDIMIENTO CORRECTO", cite: "Protocolo de Seguridad", legal: "REQUERIDO", effect: "SEGURO", desc: "Detenerse pronto y encender luces muestra cumplimiento y permite al oficial ver adentro para su seguridad. Mantén manos visibles.", url: "https://www.aclu.org/know-your-rights/stopped-by-police/#i-ve-been-pulled-over-by-the-police" } 
+                                    },
+                                    { text: "Seguir conduciendo una milla para encontrar un lugar 'perfecto'.", type: 'neutral', next: 'delayed_stop', fb: { title: "DECISIÓN CONTEXTUAL", cite: "Seguridad", legal: "SITUACIONAL", effect: "RIESGOSO", desc: "Aunque cortes reconocen el derecho a buscar un lugar seguro, debes señalar con luces de emergencia. Conducir demasiado lejos parece evasión.", url: "https://www.nolo.com/legal-encyclopedia/what-to-do-when-pulled-over.html" } },
+                                    { text: "Acelerar para perderlos.", type: 'wrong', next: 'chase', fb: { title: "EVASIÓN DELICTIVA", cite: "Código Vehicular", legal: "ILEGAL", effect: "ARRESTO", desc: "Huir de la policía es un delito grave. Resultará en cargos adicionales, incautación del vehículo y posible cárcel. Nunca intentes evadir.", url: "https://www.findlaw.com/criminal/criminal-charges/evading-arrest.html" } },
+                                    { text: "Buscar inmediatamente licencia y registro.", type: 'wrong', next: 'id', fb: { title: "MOVIMIENTO FURTIVO", cite: "Seguridad Oficial", legal: "ALTO RIESGO", effect: "ARMAS", desc: "Mala táctica. Rebuscar antes de que el oficial llegue parece que buscas un arma. Mantén manos visibles hasta que te lo pidan.", url: "https://www.law.cornell.edu/wex/furtive_movement" } }
+                                ]
+                            },
+                            delayed_stop: {
+                                text: "El oficial se acerca agresivamente. '¡¿Por qué no se detuvo de inmediato?!'",
+                                img: 'https://dl.dropbox.com/scl/fi/07arrljui0vi2z1iyb7bu/Officer-at-Window.png?rlkey=wxinprdl0um3mqy3nwzhmr1y0&st=swrpohwa',
+                                choices: [
+                                    { text: "Explicar con calma: 'Buscaba un área segura e iluminada. Disculpe la preocupación.'", type: 'correct', next: 'id', fb: { title: "DESESCALADA", cite: "Comunicación", legal: "ACEPTABLE", effect: "CALMANTE", desc: "Una explicación breve y respetuosa puede calmar la tensión. Las cortes reconocen preocupaciones de seguridad razonables." } },
+                                    { text: "No decir nada, entregar licencia.", type: 'neutral', next: 'id', fb: { title: "CUMPLIMIENTO SILENCIOSO", cite: "5ta Enmienda", legal: "LEGAL", effect: "NEUTRAL", desc: "Tienes derecho a guardar silencio, pero una breve explicación a menudo ayuda.", url: "https://www.law.cornell.edu/wex/fifth_amendment" } },
+                                    { text: "Discutir: '¡Tengo derecho a sentirme seguro!'", type: 'wrong', next: 'escalation', fb: { title: "CONFRONTACIÓN", cite: "Seguridad", legal: "IMPRUDENTE", effect: "TENSIÓN", desc: "Legalmente tienes razón, pero discutir escala la situación. Guarda los argumentos para la corte." } }
+                                ]
+                            },
+                            id: {
+                                text: "Oficial: 'Licencia, registro y prueba de seguro, por favor.'",
+                                img: 'https://dl.dropbox.com/scl/fi/07arrljui0vi2z1iyb7bu/Officer-at-Window.png?rlkey=wxinprdl0um3mqy3nwzhmr1y0&st=swrpohwa',
+                                choices: [
+                                    { text: "Anunciar movimientos: 'Licencia en mi billetera, registro en la guantera.' Entregarlos.", type: 'correct', next: 'search', fb: { title: "MEJOR PRÁCTICA", cite: "Protocolo", legal: "OBLIGATORIO", effect: "SEGURO", desc: "Debes proveer estos documentos. Anunciar tus movimientos previene malentendidos." } },
+                                    { text: "Preguntar '¿Estoy detenido? ¿Cuál es la razón de la parada?'", type: 'neutral', next: 'questions', fb: { title: "CONSULTA LEGAL", cite: "4ta Enmienda", legal: "PERMITIDO", effect: "PROCEDIMENTAL", desc: "Puedes preguntar cortésmente la razón, pero aún debes dar tu identificación.", url: "https://www.nolo.com/legal-encyclopedia/police-stops-when-pulled-over-30186.html" } },
+                                    { text: "Rehusar: 'No tengo que mostrarle nada.'", type: 'wrong', end: true, win: false, fb: { title: "INCUMPLIMIENTO", cite: "Código Estatal", legal: "ILEGAL", effect: "ARRESTO", desc: "Rehusarse a dar licencia es un delito separado. Puedes ser arrestado.", url: "https://www.findlaw.com/traffic/traffic-stops/traffic-stops-what-to-expect.html" } }
+                                ]
+                            },
+                            questions: {
+                                text: "Oficial: 'Luz trasera rota. Muestre sus documentos o será arrestado.'",
+                                img: 'https://dl.dropbox.com/scl/fi/07arrljui0vi2z1iyb7bu/Officer-at-Window.png?rlkey=wxinprdl0um3mqy3nwzhmr1y0&st=swrpohwa',
+                                choices: [
+                                    { text: "Proveer documentos inmediatamente.", type: 'correct', next: 'search', fb: { title: "CUMPLIMIENTO INTELIGENTE", cite: "Ley de Tráfico", legal: "REQUERIDO", effect: "RESUELTO", desc: "El oficial debe informarte la razón. Ahora cumple." } },
+                                    { text: "Continuar rehusándose.", type: 'wrong', end: true, win: false, fb: { title: "OBSTRUCCIÓN", cite: "Rechazo", legal: "ARRESTABLE", effect: "CRIMINAL", desc: "Esto ahora es obstrucción. Serás arrestado." } }
+                                ]
+                            },
+                            search: {
+                                text: "Oficial devuelve documentos. '¿Le importa si registro su vehículo? Solo rutina.'",
+                                img: 'https://dl.dropboxusercontent.com/scl/fi/xrghfvc3kgng4g598t5m4/Search-Request.png?rlkey=g50rn549r1bwzoxlxr58sh5t9&st=f57p9mi7',
+                                choices: [
+                                    { text: "Decir claramente: 'No doy consentimiento para registros.'", type: 'correct', next: 'no_search', achieve: 'stonewall', fb: { title: "PROTEGIDO", cite: "4ta Enmienda", legal: "DERECHO", effect: "ÓPTIMO", desc: "Tienes derecho absoluto a rechazar registros. Nunca resistas físicamente, pero declara tu no consentimiento.", url: "https://www.oyez.org/cases/1972/71-732" } },
+                                    { text: "Preguntar: '¿Tiene causa probable?'", type: 'neutral', next: 'probable_cause', fb: { title: "PREGUNTA LEGAL", cite: "Estándares", legal: "INFORMATIVO", effect: "EDUCATIVO", desc: "Buena pregunta, pero es mejor simplemente rechazar el consentimiento." } },
+                                    { text: "Decir 'Seguro, no tengo nada que esconder.'", type: 'wrong', end: true, win: false, fb: { title: "RENUNCIA DE DERECHOS", cite: "Consentimiento", legal: "IMPRUDENTE", effect: "VULNERABLE", desc: "Acabas de renunciar a tu protección. Cualquier cosa encontrada puede usarse en tu contra.", url: "https://www.law.cornell.edu/wex/consent_search" } }
+                                ]
+                            },
+                            no_search: {
+                                text: "Oficial: 'Salga. Huelo marihuana. Eso es causa probable.'",
+                                img: '',
+                                choices: [
+                                    { text: "Salir, repetir: 'No doy consentimiento.' Mantener calma.", type: 'correct', end: true, win: true, fb: { title: "RESPUESTA PERFECTA", cite: "Terry v. Ohio", legal: "LEGAL", effect: "MEJOR RESULTADO", desc: "Si el 'olor' fue fabricado, la evidencia puede suprimirse. Nunca resistas físicamente." } },
+                                    { text: "Rehusar salir: 'No puede obligarme.'", type: 'wrong', end: true, win: false, fb: { title: "VIOLACIÓN DE ORDEN", cite: "Pennsylvania v. Mimms", legal: "ILEGAL REHUSAR", effect: "ARRESTO", desc: "Los oficiales PUEDEN ordenarte salir del vehículo. Rehusarse es obstrucción.", url: "https://www.oyez.org/cases/1977/76-1830" } },
+                                    { text: "Salir y bloquear físicamente el registro.", type: 'wrong', end: true, win: false, fb: { title: "OBSTRUCCIÓN FÍSICA", cite: "Obstrucción", legal: "CRIMINAL", effect: "AGRESIÓN", desc: "Nunca interfieras físicamente. Esto es obstrucción/agresión." } }
+                                ]
+                            },
+                            probable_cause: {
+                                text: "Oficial: 'No necesito explicarle. Dé consentimiento o conseguiremos una orden.'",
+                                img: '',
+                                choices: [
+                                    { text: "Decir: 'No doy consentimiento. Si tiene causa, proceda. Si no, ¿puedo irme?'", type: 'correct', end: true, win: true, achieve: 'stonewall', fb: { title: "ASERTIVO PERO LEGAL", cite: "4ta Enmienda", legal: "PROTEGIDO", effect: "EXCELENTE", desc: "Respuesta perfecta. Rehusaste el consentimiento y desafiaste su farol." } },
+                                    { text: "Dar consentimiento para evitar amenaza de orden.", type: 'wrong', end: true, win: false, fb: { title: "COACCIÓN", cite: "Ley de Consentimiento", legal: "VÁLIDO", effect: "RENUNCIA", desc: "El consentimiento bajo amenaza de orden aún se considera válido en la mayoría de cortes." } }
+                                ]
+                            },
+                            escalation: {
+                                text: "Oficial llama refuerzos. 'Fuera del auto. AHORA.'",
+                                choices: [
+                                    { text: "Salir inmediatamente, manos visibles, seguir órdenes.", type: 'correct', next: 'id', fb: { title: "CONTROL DE DAÑOS", cite: "Desescalada", legal: "REQUERIDO", effect: "RECUPERACIÓN", desc: "Cuando la situación escala, el cumplimiento es crítico." } },
+                                    { text: "Quedarse en el auto: '¡Conozco mis derechos!'", type: 'wrong', end: true, win: false, fb: { title: "INCUMPLIMIENTO", cite: "Orden Legal", legal: "ILEGAL", effect: "FORZADO", desc: "Rehusar órdenes legales lleva al arresto y remoción forzada." } }
+                                ]
+                            },
+                            chase: { 
+                                text: "Helicóptero arriba. Tira de clavos adelante. Parada de delito grave: '¡Salga con las manos arriba!'",
+                                choices: [{
+                                    text: "Cumplir. Has cometido un error catastrófico.", 
+                                    type: 'wrong', end: true, win: false, 
+                                    fb: { title: "EVASIÓN DELICTIVA", cite: "Delitos Múltiples", legal: "CATASTRÓFICO", effect: "PRISIÓN", desc: "Ahora enfrentas evasión grave. Multa original: $25. Tu decisión te costó tu libertad.", url: "https://www.findlaw.com/criminal/criminal-charges/evading-arrest.html" }
+                                }] 
+                            }
+                        }
+                    },
+                    {
+                        id: 'interrogation', title: 'Interrogatorio Policial',
+                        nodes: {
+                            start: {
+                                text: "Estación de policía. Detective: 'Solo queremos escuchar tu lado. No estás arrestado.'",
+                                choices: [
+                                    { text: "Decir: 'Quiero hablar con un abogado antes de responder.'", type: 'correct', end: true, win: true, achieve: 'attorney', fb: { title: "ELECCIÓN SABIA", cite: "Miranda v. Arizona", legal: "DERECHO ABSOLUTO", effect: "PROTEGIDO", desc: "Esta es la ÚNICA respuesta segura. Todo lo que digas PUEDE y SERÁ usado en tu contra.", url: "https://www.aclu.org/know-your-rights/stopped-by-police/#i-ve-been-arrested-by-the-police" } },
+                                    { text: "Responder preguntas para limpiar tu nombre.", type: 'wrong', end: true, win: false, fb: { title: "GRAN ERROR", cite: "Riesgo Autoincriminación", legal: "PELIGROSO", effect: "EVIDENCIA CREADA", desc: "La policía puede citarte mal o encontrar contradicciones. SIEMPRE consigue abogado." } },
+                                    { text: "Preguntar: '¿Soy libre de irme?'", type: 'neutral', next: 'free_to_go', fb: { title: "BUENA PREGUNTA", cite: "Derechos Detención", legal: "INTELIGENTE", effect: "ACLARATORIO", desc: "Pregunta importante. Si no estás detenido, puedes irte." } }
+                                ]
+                            },
+                            free_to_go: {
+                                text: "Detective: 'Eres libre de irte. Pero irse parece sospechoso.'",
+                                choices: [
+                                    { text: "Levantarse: 'Me voy. Contacte a mi abogado.'", type: 'correct', end: true, win: true, achieve: 'attorney', fb: { title: "EXCELENTE DECISIÓN", cite: "Derecho a Silencio", legal: "TOTALMENTE LEGAL", effect: "ÓPTIMO", desc: "Táctica de manipulación. 'Parece sospechoso' no es evidencia." } },
+                                    { text: "Quedarse y responder para probar inocencia.", type: 'wrong', end: true, win: false, fb: { title: "TRAMPA DE INTERROGATORIO", cite: "Confesión Falsa", legal: "DAÑINO", effect: "AUTOINCRIMINACIÓN", desc: "Caíste en la manipulación." } }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        id: 'stop_frisk', title: 'Encuentro Callejero',
+                        nodes: {
+                            start: {
+                                text: "Caminando a casa. Oficial: 'Oye, ven aquí. ¿Qué haces aquí?'",
+                                choices: [
+                                    { text: "Parar, preguntar: '¿Estoy detenido o puedo irme?'", type: 'correct', next: 'detention_check', fb: { title: "ESTABLECIENDO ESTADO", cite: "Terry v. Ohio", legal: "PREGUNTA CRUCIAL", effect: "ACLARATORIO", desc: "Esto establece si estás detenido o es un encuentro consensual.", url: "https://www.oyez.org/cases/1967/67" } },
+                                    { text: "Responder: 'Vivo aquí, caminando a casa.'", type: 'neutral', next: 'information', fb: { title: "INFORMACIÓN VOLUNTARIA", cite: "5ta Enmienda", legal: "TU ELECCIÓN", effect: "DANDO INFO", desc: "No estabas obligado a responder." } },
+                                    { text: "Ignorar y seguir caminando.", type: 'neutral', next: 'walking_away', fb: { title: "MOVIMIENTO RIESGOSO", cite: "Encuentro Consensual", legal: "DEPENDE", effect: "INCIERTO", desc: "Si es una detención, irse crea problemas." } }
+                                ]
+                            },
+                            detention_check: {
+                                text: "Oficial: 'Lo detengo. Necesito buscar armas.'",
+                                choices: [
+                                    { text: "Decir: 'No consiento registros.' Manos visibles, cumplir.", type: 'correct', next: 'frisk', achieve: 'silent', fb: { title: "PROTOCOLO APROPIADO", cite: "Terry v. Ohio", legal: "BALANCEADO", effect: "PROTEGIDO", desc: "Declara no consentimiento, pero no resistas físicamente." } },
+                                    { text: "Consentir registro: 'Adelante.'", type: 'wrong', end: true, win: false, fb: { title: "CONSENTIMIENTO DADO", cite: "Renuncia 4ta Enmienda", legal: "VÁLIDO", effect: "DESPROTEGIDO", desc: "Renunciaste a la protección. Nunca consientas." } },
+                                    { text: "Rehusar cumplir e irse.", type: 'wrong', end: true, win: false, fb: { title: "INCUMPLIMIENTO", cite: "Orden Detención", legal: "ILEGAL", effect: "ARRESTO", desc: "Una vez detenido, no eres libre de irte." } }
+                                ]
+                            },
+                            frisk: {
+                                text: "Oficial siente teléfono. '¿Qué es esto?'",
+                                choices: [
+                                    { text: "Decir: 'Mi teléfono. No consiento que lo saquen o registren.'", type: 'correct', end: true, win: true, fb: { title: "PROTECCIÓN DISPOSITIVO", cite: "Riley v. California", legal: "PROTEGIDO", effect: "INTELIGENTE", desc: "La policía necesita orden para registrar teléfonos.", url: "https://www.oyez.org/cases/2013/13-132" } },
+                                    { text: "Desbloquear teléfono y mostrarles.", type: 'wrong', end: true, win: false, fb: { title: "REGISTRO VOLUNTARIO", cite: "Consentimiento", legal: "DERECHOS RENUNCIADOS", effect: "EXPUESTO", desc: "Les diste acceso a tu vida digital." } }
+                                ]
+                            },
+                            information: {
+                                text: "Oficial: '¿Su nombre? Necesito identificación.'",
+                                choices: [
+                                    { text: "Verificar ley estatal. Dar ID si es requerido.", type: 'correct', end: true, win: true, fb: { title: "CONOCE TU LEY", cite: "Identificación", legal: "ESPECÍFICO", effect: "INFORMADO", desc: "Solo algunos estados requieren ID durante detención.", url: "https://en.wikipedia.org/wiki/Stop_and_identify_statutes" } },
+                                    { text: "Dar toda la info personal voluntariamente.", type: 'wrong', end: true, win: false, fb: { title: "COMPARTIR DE MÁS", cite: "Control Info", legal: "IMPRUDENTE", effect: "GRABADO", desc: "Provee solo lo legalmente requerido." } }
+                                ]
+                            },
+                            walking_away: {
+                                text: "Oficial: '¡Oye! ¡Alto!'",
+                                choices: [
+                                    { text: "Voltear y preguntar: '¿Estoy detenido?'", type: 'correct', next: 'detention_check', fb: { title: "ACLARACIÓN", cite: "Estado", legal: "NECESARIO", effect: "ESTABLECIENDO", desc: "Siempre establece si estás detenido." } },
+                                    { text: "Seguir caminando.", type: 'wrong', end: true, win: false, fb: { title: "ESCALADA", cite: "Posible Detención", legal: "RIESGOSO", effect: "FUERZA FÍSICA", desc: "Podría interpretarse como huida." } }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                id: 'home', title: 'PRIVACIDAD HOGAR', icon: '🏠', desc: 'Órdenes y entrada.', art: 'art-home',
+                levels: [
+                    {
+                        id: 'knock', title: 'El Golpe',
+                        nodes: {
+                            start: {
+                                text: "3:20 AM. Golpes fuertes. '¡POLICÍA! ¡ABRA!'",
+                                choices: [
+                                    { text: "Quedarse dentro, preguntar: '¿Tienen orden?'", type: 'correct', next: 'warrant_check', achieve: 'castle', fb: { title: "DOCTRINA CASTILLO", cite: "Payton v. New York", legal: "PROTEGIDO", effect: "INTELIGENTE", desc: "La policía necesita orden para entrar sin consentimiento.", url: "https://www.aclu.org/know-your-rights/stopped-by-police/#the-police-are-at-my-home" } },
+                                    { text: "Abrir puerta.", type: 'wrong', next: 'door_open', fb: { title: "ERROR CRÍTICO", cite: "Simple Vista", legal: "PELIGROSO", effect: "EXPOSICIÓN", desc: "Abrir permite observaciones a 'simple vista'." } },
+                                    { text: "Ignorar y quedarse callado.", type: 'neutral', next: 'persistent', fb: { title: "ENFOQUE PASIVO", cite: "Silencio", legal: "RIESGOSO", effect: "POCO CLARO", desc: "El silencio puede llevar a reclamo de emergencia." } }
+                                ]
+                            },
+                            warrant_check: {
+                                text: "Oficial: '¡Sí, tenemos una orden!'",
+                                choices: [
+                                    { text: "Pedir: 'Pásela por debajo de la puerta.'", type: 'correct', next: 'verify_warrant', fb: { title: "VERIFICACIÓN", cite: "4ta Enmienda", legal: "TU DERECHO", effect: "PROTECTOR", desc: "Verifica la orden antes de abrir." } },
+                                    { text: "Abrir inmediatamente.", type: 'wrong', next: 'no_warrant', fb: { title: "CONFIAR SIN VERIFICAR", cite: "Consentimiento", legal: "ERROR", effect: "ENGAÑADO", desc: "La policía puede mentir sobre las órdenes." } }
+                                ]
+                            },
+                            verify_warrant: {
+                                text: "Es una orden para el vecino. Dirección incorrecta.",
+                                choices: [
+                                    { text: "Decir: 'Dirección incorrecta. No pueden entrar.' Grabar.", type: 'correct', end: true, win: true, fb: { title: "RESPUESTA PERFECTA", cite: "Especificidad", legal: "PROTEGIDO", effect: "SALVADO", desc: "Las órdenes deben especificar la ubicación exacta." } },
+                                    { text: "Dejarlos entrar: 'Error honesto.'", type: 'wrong', end: true, win: false, fb: { title: "DESASTRE CONSENTIMIENTO", cite: "Anulación", legal: "RENUNCIA", effect: "ADMISIBLE", desc: "Tu consentimiento hizo irrelevante la orden errónea." } }
+                                ]
+                            },
+                            no_warrant: {
+                                text: "Puerta abierta. Oficial ve contrabando. '¿Qué es esto?'",
+                                choices: [
+                                    { text: "Decir: 'No consentí. Quiero un abogado.'", type: 'correct', end: true, win: false, fb: { title: "CONTROL DE DAÑOS", cite: "Miranda", legal: "MUY TARDE", effect: "ARRESTADO", desc: "Cometiste un error fatal al abrir." } },
+                                    { text: "Explicar: '¡Eso no es mío!'", type: 'wrong', end: true, win: false, fb: { title: "AUTOINCRIMINACIÓN", cite: "Admisión", legal: "USADO EN CONTRA", effect: "PEOR", desc: "Admitiste conocimiento." } }
+                                ]
+                            },
+                            door_open: {
+                                text: "Pie del oficial en puerta. '¿Podemos entrar?'",
+                                choices: [
+                                    { text: "Salir, cerrar puerta.", type: 'correct', end: true, win: true, fb: { title: "LÍMITE INTELIGENTE", cite: "Regla Umbral", legal: "PROTEGIDO", effect: "CONTROLADO", desc: "Mantuviste la privacidad del interior." } },
+                                    { text: "Decir 'Seguro'.", type: 'wrong', end: true, win: false, fb: { title: "ENTRADA INVITADA", cite: "Consentimiento", legal: "RENUNCIADO", effect: "REGISTRABLE", desc: "Los invitaste a entrar." } }
+                                ]
+                            },
+                            persistent: {
+                                text: "Golpes continúan. '¡Control de bienestar!'",
+                                choices: [
+                                    { text: "Gritar: 'Estoy bien. No hay emergencia.'", type: 'correct', end: true, win: true, achieve: 'castle', fb: { title: "CONTROL DERROTADO", cite: "Circunstancias Exigentes", legal: "NEGADO", effect: "PROTEGIDO", desc: "Eliminaste las 'circunstancias exigentes'." } },
+                                    { text: "Quedarse callado.", type: 'wrong', next: 'forced_entry', fb: { title: "SILENCIO MAL USADO", cite: "Emergencia", legal: "JUSTIFICADO", effect: "IRRUPCIÓN", desc: "Les permitió alegar emergencia." } }
+                                ]
+                            },
+                            forced_entry: {
+                                text: "Entran a la fuerza.",
+                                choices: [
+                                    { text: "Decir: 'No consiento.' Grabar.", type: 'correct', end: true, win: false, fb: { title: "DOCUMENTACIÓN", cite: "Entrada Ilegal", legal: "VIOLADO", effect: "DEMANDA CIVIL", desc: "Crea evidencia para demanda." } },
+                                    { text: "Pelear.", type: 'wrong', end: true, win: false, fb: { title: "AGRESIÓN", cite: "Fuerza", legal: "CRIMINAL", effect: "PRISIÓN", desc: "No resistas físicamente." } }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        id: 'landlord', title: 'Entrada del Casero',
+                        nodes: {
+                            start: {
+                                text: "El casero abre la puerta sin aviso.",
+                                choices: [
+                                    { text: "Decir firmemente: 'No tiene permiso. Por favor salga.'", type: 'correct', end: true, win: true, fb: { title: "DERECHOS INQUILINO", cite: "Leyes Aviso", legal: "PROTEGIDO", effect: "LÍMITE", desc: "Usualmente se requiere aviso.", url: "https://www.nolo.com/legal-encyclopedia/landlord-enter-rental-unit-state-laws.html" } },
+                                    { text: "Permitirlo.", type: 'wrong', end: true, win: false, fb: { title: "CONSENTIMIENTO IMPLÍCITO", cite: "Aquiescencia", legal: "RENUNCIADO", effect: "PRECEDENTE", desc: "Sienta mal precedente." } },
+                                    { text: "Llamar policía.", type: 'neutral', end: true, win: true, fb: { title: "ESCALADA", cite: "Allanamiento", legal: "VÁLIDO", effect: "FUERTE", desc: "Válido, pero usualmente asunto civil." } }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                id: 'civil', title: 'DERECHOS CIVILES', icon: '📹', desc: 'Grabación y protesta.', art: 'art-civil',
+                levels: [
+                    {
+                        id: 'cam', title: 'Grabación Pública',
+                        nodes: {
+                            start: {
+                                text: "Policía arrestando a alguien. Estás grabando.",
+                                choices: [
+                                    { text: "Seguir filmando desde lejos.", type: 'correct', next: 'order', fb: { title: "1RA ENMIENDA", cite: "Glik v. Cunniffe", legal: "PROTEGIDO", effect: "DOCUMENTANDO", desc: "Derecho a grabar en público.", url: "https://www.eff.org/issues/right-to-record-police" } },
+                                    { text: "Acercarse.", type: 'wrong', next: 'interference', fb: { title: "INTERFERENCIA", cite: "Obstrucción", legal: "CRUCE", effect: "ARRESTABLE", desc: "Muy cerca interfiere." } },
+                                    { text: "Dejar de filmar.", type: 'wrong', end: true, win: false, fb: { title: "AUTOCENSURA", cite: "Derechos No Usados", legal: "PERDIDO", effect: "SIN RESPONSABILIDAD", desc: "Renunciaste a la evidencia." } }
+                                ]
+                            },
+                            order: {
+                                text: "Oficial: '¡Deje de grabar!'",
+                                choices: [
+                                    { text: "Seguir grabando. 'Tengo derecho.'", type: 'correct', next: 'persistence', achieve: 'camera', fb: { title: "AFIRMANDO DERECHOS", cite: "1ra Enmienda", legal: "PROTEGIDO", effect: "DOCUMENTADO", desc: "Amenaza del oficial sin base." } },
+                                    { text: "Parar de grabar.", type: 'neutral', end: true, win: false, fb: { title: "INTIMIDADO", cite: "Efecto Disuasorio", legal: "AMENAZA LEGAL", effect: "CUMPLIÓ", desc: "Cumpliste orden ilegal." } },
+                                    { text: "Parar y disculparse.", type: 'wrong', end: true, win: false, fb: { title: "RENDIDO", cite: "Autocensura", legal: "INNECESARIO", effect: "DESPERDICIADO", desc: "Reforzó el concepto erróneo." } }
+                                ]
+                            },
+                            persistence: {
+                                text: "Oficial: '¡Bájalo!'",
+                                choices: [
+                                    { text: "Seguir filmando, retroceder.", type: 'correct', end: true, win: true, achieve: 'camera', fb: { title: "PERFECTO", cite: "Foro Público", legal: "CONSTITUCIONAL", effect: "ÓPTIMO", desc: "Derechos mantenidos mientras desescalaba." } },
+                                    { text: "Parar, discutir.", type: 'neutral', end: true, win: false, fb: { title: "EVIDENCIA PERDIDA", cite: "Evidencia Perdida", legal: "DISCUTIÓ", effect: "SIN PRUEBA", desc: "Argumentos necesitan prueba." } },
+                                    { text: "Fingir cumplir.", type: 'wrong', end: true, win: false, fb: { title: "FALSO CUMPLIMIENTO", cite: "Intimidación", legal: "PARCIAL", effect: "SIN DOCS", desc: "Dejó de grabar lo importante." } }
+                                ]
+                            },
+                            interference: {
+                                text: "Oficial: '¡Atrás!'",
+                                choices: [
+                                    { text: "Retroceder, seguir grabando.", type: 'correct', end: true, win: true, fb: { title: "CUMPLIMIENTO", cite: "Balance", legal: "INTELIGENTE", effect: "PROTEGIDO", desc: "Corrigió proximidad." } },
+                                    { text: "Rehusar.", type: 'wrong', end: true, win: false, fb: { title: "OBSTRUCCIÓN", cite: "Orden Legal", legal: "ARRESTABLE", effect: "CARGADO", desc: "Derecho a grabar no es derecho a interferir." } }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        id: 'protest', title: 'Asamblea Pacífica',
+                        nodes: {
+                            start: {
+                                text: "Protesta. Policía: 'Asamblea ilegal. Dispérsense.'",
+                                choices: [
+                                    { text: "Preguntar: '¿Qué ley violamos?'", type: 'correct', next: 'clarification', fb: { title: "JUSTIFICACIÓN", cite: "1ra Enmienda", legal: "PROTEGIDO", effect: "CUESTIONANDO", desc: "Policía necesita motivos.", url: "https://www.aclu.org/know-your-rights/protesters-rights" } },
+                                    { text: "Irse.", type: 'neutral', end: true, win: false, fb: { title: "CUMPLIMIENTO", cite: "Efecto Disuasorio", legal: "SEGURO", effect: "SIN USAR", desc: "Seguro pero conforme." } },
+                                    { text: "Rehusar: '¡No pueden obligarnos!'", type: 'neutral', next: 'arrest_risk', fb: { title: "DESOBEDIENCIA CIVIL", cite: "Tradición", legal: "RIESGOSO", effect: "ARRESTO", desc: "Viene con consecuencias." } }
+                                ]
+                            },
+                            clarification: {
+                                text: "Oficial: '¡Sin permiso!'",
+                                choices: [
+                                    { text: "Decir: 'Asamblea espontánea no requiere permiso.'", type: 'correct', next: 'standoff', achieve: 'peaceful', fb: { title: "CONOCIMIENTO", cite: "Permisos", legal: "INFORMADO", effect: "FUERTE", desc: "Tienes razón." } },
+                                    { text: "Discutir pero irse.", type: 'neutral', end: true, win: false, fb: { title: "OBJECIÓN", cite: "Resistencia", legal: "OBJETÓ", effect: "DISPERSADO", desc: "Expresó objeción." } }
+                                ]
+                            },
+                            standoff: {
+                                text: "Oficial: 'Arresto en 60 segundos.'",
+                                choices: [
+                                    { text: "Quedarse, documentar, pacífico.", type: 'correct', end: true, win: true, achieve: 'peaceful', fb: { title: "RESISTENCIA", cite: "Historia", legal: "DESAFÍO", effect: "ARRESTO", desc: "Desobediencia civil." } },
+                                    { text: "Dispersarse.", type: 'neutral', end: true, win: false, fb: { title: "RETIRADA", cite: "Seguridad", legal: "CUMPLIDO", effect: "SEGURO", desc: "Elección práctica." } }
+                                ]
+                            },
+                            arrest_risk: {
+                                text: "Comienza arresto masivo.",
+                                choices: [
+                                    { text: "Aflojarse, no resistir.", type: 'correct', end: true, win: true, achieve: 'peaceful', fb: { title: "PASIVO", cite: "No Violento", legal: "DOCUMENTADO", effect: "RÉCORD", desc: "Resistencia pasiva." } },
+                                    { text: "Pelear.", type: 'wrong', end: true, win: false, fb: { title: "RESISTENCIA", cite: "Agresión", legal: "CRIMINAL", effect: "CARGOS", desc: "Nunca pelees." } }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                id: 'work', title: 'LUGAR DE TRABAJO', icon: '💼', desc: 'Robo de salario, seguridad.', art: 'art-work',
+                levels: [
+                    {
+                        id: 'wage', title: 'Fuera de Horario',
+                        nodes: {
+                            start: {
+                                text: "Gerente: 'Entrega esto camino a casa.' (Fuera de reloj)",
+                                choices: [
+                                    { text: "Rehusar: 'Necesito estar registrado.'", type: 'correct', end: true, win: true, achieve: 'union', fb: { title: "PROTECCIÓN FLSA", cite: "Estándares Laborales", legal: "ILEGAL", effect: "PROTEGIDO", desc: "Robo de salario.", url: "https://www.dol.gov/agencies/whd/flsa" } },
+                                    { text: "Hacerlo.", type: 'wrong', end: true, win: false, fb: { title: "VÍCTIMA", cite: "Impago", legal: "PÉRDIDA", effect: "IMPAGO", desc: "Trabajaste gratis." } },
+                                    { text: "Registrar entrada de nuevo.", type: 'correct', end: true, win: true, achieve: 'union', fb: { title: "INTELIGENTE", cite: "Tiempo Pagado", legal: "APROPIADO", effect: "PAGADO", desc: "Aseguraste pago." } }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        id: 'harassment', title: 'Acoso',
+                        nodes: {
+                            start: {
+                                text: "Supervisor hace comentario sexual.",
+                                choices: [
+                                    { text: "Decir: 'Eso es inapropiado. Para.'", type: 'correct', next: 'escalation', fb: { title: "CONFRONTACIÓN", cite: "Título VII", legal: "PROTEGIDO", effect: "LÍMITE", desc: "Comunicaste comportamiento no deseado.", url: "https://www.eeoc.gov/harassment" } },
+                                    { text: "Ignorar.", type: 'neutral', next: 'continues', fb: { title: "EVITACIÓN", cite: "Sin Acción", legal: "PASIVO", effect: "CONTINÚA", desc: "Legalmente débil." } },
+                                    { text: "Reportar a RRHH.", type: 'correct', next: 'hr_report', fb: { title: "QUEJA FORMAL", cite: "Política", legal: "PROTEGIDO", effect: "INVESTIGACIÓN", desc: "Enfoque válido.", url: "https://www.eeoc.gov/youth/how-file-complaint" } }
+                                ]
+                            },
+                            escalation: {
+                                text: "Supervisor toma represalias con malos turnos.",
+                                choices: [
+                                    { text: "Presentar queja formal (Represalia).", type: 'correct', end: true, win: true, fb: { title: "RECLAMO REPRESALIA", cite: "Título VII", legal: "ILEGAL", effect: "PROTEGIDO", desc: "La represalia es ilegal.", url: "https://www.eeoc.gov/retaliation" } },
+                                    { text: "Aceptarlo.", type: 'wrong', end: true, win: false, fb: { title: "FUNCIONA", cite: "Disuasorio", legal: "SILENCIADO", effect: "ABUSO", desc: "Envalentona el acoso." } }
+                                ]
+                            },
+                            continues: {
+                                text: "Escala a 'reunión privada'.",
+                                choices: [
+                                    { text: "Rehusar puerta cerrada.", type: 'correct', next: 'hr_report', fb: { title: "LÍMITE", cite: "Seguridad", legal: "INTELIGENTE", effect: "PROTEGIDO", desc: "Medida de seguridad." } },
+                                    { text: "Cumplir.", type: 'wrong', end: true, win: false, fb: { title: "INSEGURO", cite: "Escalada", legal: "PELIGROSO", effect: "VULNERABLE", desc: "Posición vulnerable." } }
+                                ]
+                            },
+                            hr_report: {
+                                text: "RRHH: 'Investigaremos.'",
+                                choices: [
+                                    { text: "Pedir separación.", type: 'correct', end: true, win: true, fb: { title: "MEDIDAS PROVISIONALES", cite: "EEOC", legal: "RAZONABLE", effect: "PROTEGIDO", desc: "Empleadores deben proveer seguridad." } },
+                                    { text: "Aceptar proceso.", type: 'neutral', end: true, win: false, fb: { title: "CONFIANZA", cite: "Investigación", legal: "RIESGOSO", effect: "EXPOSICIÓN", desc: "Riesgoso." } }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        id: 'safety', title: 'Condiciones Inseguras',
+                        nodes: {
+                            start: {
+                                text: "Arnés roto. Gerente: 'Úsalo.'",
+                                choices: [
+                                    { text: "Rehusar.", type: 'correct', next: 'retaliation', achieve: 'whistleblower', fb: { title: "PROTECCIÓN OSHA", cite: "Ley OSH", legal: "PROTEGIDO", effect: "SEGURIDAD", desc: "Derecho a rehusar trabajo inseguro.", url: "https://www.osha.gov/workers/right-to-refuse" } },
+                                    { text: "Usarlo.", type: 'wrong', end: true, win: false, fb: { title: "RIESGO LESIÓN", cite: "Violación", legal: "PELIGROSO", effect: "MUERTE", desc: "Nunca uses equipo roto." } },
+                                    { text: "Reportar anónimo pero trabajar.", type: 'neutral', next: 'osha_report', fb: { title: "DENUNCIANTE", cite: "Queja", legal: "PROTEGIDO", effect: "INVESTIGACIÓN", desc: "Bien reportar, mal trabajar.", url: "https://www.osha.gov/workers/file-complaint" } }
+                                ]
+                            },
+                            retaliation: {
+                                text: "Gerente amenaza empleo.",
+                                choices: [
+                                    { text: "Documentar amenaza, presentar queja.", type: 'correct', end: true, win: true, achieve: 'whistleblower', fb: { title: "ANTI-REPRESALIA", cite: "Ley OSH", legal: "ILEGAL", effect: "PROTEGIDO", desc: "Represalia ilegal.", url: "https://www.whistleblowers.gov/" } },
+                                    { text: "Echarse atrás.", type: 'wrong', end: true, win: false, fb: { title: "INTIMIDACIÓN", cite: "Cumplimiento", legal: "INSEGURO", effect: "RIESGO", desc: "La amenaza funcionó." } }
+                                ]
+                            },
+                            osha_report: {
+                                text: "Gerente pregunta: '¿Quién llamó a OSHA?'",
+                                choices: [
+                                    { text: "Guardar silencio.", type: 'correct', end: true, win: true, achieve: 'whistleblower', fb: { title: "PROTECCIÓN", cite: "Ley OSH", legal: "PROTEGIDO", effect: "INVESTIGACIÓN", desc: "No obligado a revelar." } },
+                                    { text: "Admitirlo.", type: 'neutral', end: true, win: true, fb: { title: "VALIENTE", cite: "Denunciante", legal: "RIESGOSO", effect: "OBJETIVO", desc: "Te hace un objetivo." } }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        id: 'discrimination', title: 'Contratación',
+                        nodes: {
+                            start: {
+                                text: "Entrevistador pregunta sobre planes de embarazo.",
+                                choices: [
+                                    { text: "Responder: 'Pregunta inapropiada.'", type: 'correct', end: true, win: true, fb: { title: "PREGUNTA ILEGAL", cite: "Ley Embarazo", legal: "PROTEGIDO", effect: "DOCUMENTADO", desc: "Discriminación ilegal.", url: "https://www.eeoc.gov/pregnancy-discrimination" } },
+                                    { text: "Responder honestamente.", type: 'wrong', end: true, win: false, fb: { title: "RESPONDIDO", cite: "Habilitado", legal: "REFORZADO", effect: "PARTICIPANDO", desc: "Refuerza discriminación." } },
+                                    { text: "Desviar.", type: 'neutral', end: true, win: true, fb: { title: "DIPLOMÁTICO", cite: "Evitado", legal: "INTELIGENTE", effect: "NO-RESPUESTA", desc: "Respuesta astuta." } }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+        ]
+    };
+
 /* ================= GAME ENGINE ================= */
 const game = {
     state: {
