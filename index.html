@@ -1783,22 +1783,23 @@ const game = {
 
     // added on 02/05/26 start
     toggleLang: () => {
+        // 1. Toggle State
         game.state.lang = game.state.lang === 'en' ? 'es' : 'en';
 
         // 2. Update Static UI (Buttons, Headers)
         const l = game.state.lang;
         document.querySelectorAll('[data-text]').forEach(el => {
             const key = el.getAttribute('data-text');
-            if(textData[l][key]) el.innerHTML = textData[l][key];
+            if(textData[l] && textData[l][key]) {
+                el.innerText = textData[l][key]; // Use innerText for safety
+            }
         });
 
         // 3. Force Reload of Current View with New Content
-        // We re-call the render functions, which will now pull from the new language pack
         if(!document.getElementById('view-modules').classList.contains('hidden')) {
             game.showModules();
         }
         else if(!document.getElementById('view-levels').classList.contains('hidden')) {
-            // Find the equivalent module in the new language to keep context
             const currentModId = game.state.currentMod.id;
             const newMod = game.getContent().modules.find(m => m.id === currentModId);
             game.showLevels(newMod);
@@ -1809,25 +1810,62 @@ const game = {
 
             // Find new data structure
             const newMod = game.getContent().modules.find(m => m.id === modId);
-            const newLvl = newMod.levels.find(l => l.id === lvlId);
+            
+            // --- FIX IS HERE: Changed 'levles' to 'levels' ---
+            const newLvl = newMod.levels.find(l => l.id === lvlId); 
+            // -------------------------------------------------
 
-            // Map the current node ID (e.g., 'start', 'search') to the new level
-            // Note: This relies on your node keys (start:, search:) being identical in both files
+            // Map the current node ID
             const nodeId = Object.keys(game.state.currentLvl.nodes).find(key => game.state.currentLvl.nodes[key] === game.state.currentNode);
 
-            // Update State pointers
+            // Update pointers
             game.state.currentMod = newMod;
             game.state.currentLvl = newLvl;
-            game.state.currentNode = newLvl.nodes[nodeId] || newLvl.nodes.start // Fallback
+            game.state.currentNode = newLvl.nodes[nodeId] || newLvl.nodes.start;
 
-            // re-render
+            // Re-render
             document.getElementById('game-title').textContent = newLvl.title;
             game.renderNode();
         }
         else if(!document.getElementById('view-dashboard').classList.contains('hidden')) {
             game.showDashboard();
         }
-        // game.updateLang();
+        
+        // Update Summary Screen if visible
+        if(!document.getElementById('view-summary').classList.contains('hidden')) {
+             const isWin = document.getElementById('sum-result').innerText === textData['en'].pass || document.getElementById('sum-result').innerText === textData['es'].pass; 
+             const sumTitleKey = document.getElementById('sum-title').innerText.includes("ACCOMPLISHED") || document.getElementById('sum-title').innerText.includes("CUMPLIDA") ? 'mission_acc' : 'mission_fail';
+             const sumResultKey = document.getElementById('sum-result').innerText.includes("PASSED") || document.getElementById('sum-result').innerText.includes("APROBADO") ? 'pass' : 'fail';
+             
+             document.getElementById('sum-title').innerText = textData[l][sumTitleKey];
+             document.getElementById('sum-result').innerText = textData[l][sumResultKey];
+             
+             // Update resources list with translated text
+             if(game.state.sessionResources.length > 0) {
+                 const resList = document.getElementById('sum-resources-list');
+                 // Clear list
+                 resList.innerHTML = '';
+                 // Re-populate with translated text
+                 game.state.sessionResources.forEach(res => {
+                    const titleText = game.getText(res.title);
+                    const descText = game.getText(res.desc);
+                    
+                    const link = document.createElement('a');
+                    link.href = res.url;
+                    link.target = "_blank";
+                    link.className = "block p-3 bg-gray-900 border border-gray-700 hover:border-neon-blue hover:bg-blue-900/20 text-gray-300 hover:text-white transition-all rounded flex justify-between items-center group";
+                    
+                    link.innerHTML = `
+                        <div>
+                            <span class="text-xs text-neon-blue font-bold block">${descText}</span>
+                            <span class="text-sm">${titleText}</span>
+                        </div>
+                        <span class="text-neon-blue opacity-50 group-hover:opacity-100">↗</span>
+                    `;
+                    resList.appendChild(link);
+                 });
+             }
+        }
     },
 
     // updateLang: () => {
