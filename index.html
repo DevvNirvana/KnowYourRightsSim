@@ -1778,7 +1778,7 @@ const game = {
 
             // Find new data structure
             const newMod = game.getContent().modules.find(m => m.id === modId);
-            const newLvl = newMod.levles.find(l => l.id === lvlId);
+            const newLvl = newMod.levels.find(l => l.id === lvlId);
 
             // Map the current node ID (e.g., 'start', 'search') to the new level
             // Note: This relies on your node keys (start:, search:) being identical in both files
