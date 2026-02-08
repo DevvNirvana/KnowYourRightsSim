@@ -147,6 +147,12 @@
         .fade-in { animation: fadeIn 0.3s ease-out forwards; opacity: 0; }
         @keyframes fadeIn { to { opacity: 1; } }
 
+        .btnlng:hover
+        {
+        color: var(--neon-green);
+        border-color:var(--neon-red) ;
+        }
+
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-2 relative z-10">
@@ -164,7 +170,7 @@
                 </div>
             </div>
             <!-- Added on 1/12/26 start -->
-            <button onclick="game.toggleLang()" id="btn-lang" class="border border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-black px-2 py-1 rounded transition-colors text-xs font-bold">
+            <button onclick="game.toggleLang()" id="btn-lang" class="border border-neon-blue text-neon-blue px-2 py-1 rounded transition-colors text-xs font-bold btnlng">
                 EN / ES
             </button>
 
@@ -191,7 +197,17 @@
         <main class="flex-grow glass-panel rounded-b-lg overflow-hidden relative flex flex-col">
             
             <div id="view-start" class="absolute inset-0 flex flex-col items-center justify-center z-50 bg-black/80 backdrop-blur-sm">
-                <h1 class="font-orbitron text-5xl md:text-7xl text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-white mb-2" data-text="title">KNOW YOUR RIGHTS</h1>
+
+                <!-- <h1 class="font-orbitron text-5xl md:text-7xl text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-white mb-2" data-text="title">KNOW YOUR RIGHTS</h1> -->
+                 <!-- Added on feb 7th 2025 start -->
+                  <div style="position: relative; width: 100%; height: 120px; display: flex; justify-content: center; align-items: center; margin-bottom: 2rem;">
+                    <canvas id="fuzzy-title"></canvas>
+                    <h1 class="sr-only">KNOW YOUR RIGHTS</h1>
+    
+                  </div>
+
+                 <!-- end -->
+
                 <p class="font-mono text-gray-400 mb-8 text-center max-w-lg" data-text="subtitle">TACTICAL LEGAL SIMULATOR</p>
 
                 <!-- Added on 1/12/26 start -->
@@ -2237,6 +2253,188 @@ const game = {
         }
     }
 };
+
+//added on 7th deb start
+/* ================= FUZZY TEXT COMPONENT (Ported from ReactBits) ================= */
+class FuzzyText {
+    constructor(elementId) {
+        this.canvas = document.getElementById(elementId);
+        if (!this.canvas) return;
+        
+        this.ctx = this.canvas.getContext('2d');
+        
+        // CONFIGURATION (Matches your requested usage)
+        this.text = "KNOW YOUR RIGHTS";
+        this.fontFamily = 'Orbitron';
+        this.fontWeight = 900;
+        this.color = '#fff';
+        this.baseIntensity = 0.2;
+        this.hoverIntensity = 0.5;
+        this.enableHover = true;
+        
+        // Internal State
+        this.fuzzRange = 30; // How far pixels scatter
+        this.isHovering = false;
+        this.animationId = null;
+
+        this.shineOffset = 0; // Tracks the movement of the shine
+        
+        // Responsive Font Size logic
+        this.updateFontSize();
+        
+        // Event Listeners
+        window.addEventListener('resize', () => this.handleResize());
+        
+        if (this.enableHover) {
+            this.canvas.addEventListener('mouseenter', () => { this.isHovering = true; });
+            this.canvas.addEventListener('mouseleave', () => { this.isHovering = false; });
+            // Touch support
+            this.canvas.addEventListener('touchstart', () => { this.isHovering = true; }, {passive: true});
+            this.canvas.addEventListener('touchend', () => { this.isHovering = false; });
+        }
+
+        // Start Loop
+        this.animate = this.animate.bind(this);
+        requestAnimationFrame(this.animate);
+    }
+
+    updateFontSize() {
+        const width = window.innerWidth;
+
+        if (width < 480) {
+            this.fontSize = 25; // Small phones (iPhone SE)
+        } 
+        else if (width < 640) {
+            this.fontSize = 45; // Large phones
+        } 
+        else if (width < 1024) {
+            this.fontSize = 55; // Tablets
+        } 
+        else if (width < 1280) {
+            this.fontSize = 65; // Small Laptops (Crucial to prevent clipping here)
+        } 
+        else {
+            this.fontSize = 75; // Full Desktop (The size you confirmed works)
+        }
+    }
+
+    handleResize() {
+        this.updateFontSize();
+        // Resetting canvas width clears context, so we let the next frame handle redraw
+    }
+
+    animate() {
+        const width = this.canvas.parentNode.clientWidth;
+        const height = this.canvas.parentNode.clientHeight;
+
+        // 1. Setup Offscreen Canvas (The "Source" text)
+        const offscreen = document.createElement('canvas');
+        const offCtx = offscreen.getContext('2d');
+        
+        // Set offscreen dimensions just big enough for text
+        offCtx.font = `${this.fontWeight} ${this.fontSize}px ${this.fontFamily}`;
+        const metrics = offCtx.measureText(this.text);
+        const textWidth = Math.ceil(metrics.width) + 20; // + buffer
+        const textHeight = Math.ceil(this.fontSize * 1.5);
+
+        offscreen.width = textWidth;
+        offscreen.height = textHeight;
+
+        // Draw clean text onto offscreen
+        offCtx.font = `${this.fontWeight} ${this.fontSize}px ${this.fontFamily}`;
+        // offCtx.fillStyle = this.color;
+
+        // --- 1. Increment the shine position ---
+        // Adjust '0.005' to change speed (higher = faster)
+        this.shineOffset += 0.0015; 
+        if (this.shineOffset > 1.5) this.shineOffset = -0.5;
+
+
+        const gradient = offCtx.createLinearGradient(0, 0, textWidth, 0);
+
+        // Define the base colors
+        const c1 = '#7a00ff'; // Deep Purple
+        const c2 = '#ff00ff'; // Magenta
+        const c3 = '#00f3ff'; // Cyan
+        const shine = '#ffffff'; // The Shine Color (White)
+
+        // Calculate positions based on offset
+        // We use % math to make the shine wrap around smoothly
+        const shinePos = this.shineOffset;
+
+        // Stop 1: Base Gradient
+        gradient.addColorStop(0, c1);
+        gradient.addColorStop(0.5, c2);
+        gradient.addColorStop(1, c3);
+
+        // Stop 2: The Moving Shine (A sharp spike of white)
+        // We add small slivers of white on top of the base colors
+        // Using Math.min/max to prevent errors if pos goes out of 0-1 range
+        if (shinePos > 0 && shinePos < 1) {
+            // Fade in/out the white "shine" bar
+            gradient.addColorStop(Math.max(0, shinePos - 0.1), c2); // Back to base color
+            gradient.addColorStop(shinePos, shine); // Pure White Shine
+            gradient.addColorStop(Math.min(1, shinePos + 0.1), c2); // Back to base color
+        }
+
+        offCtx.fillStyle = gradient;
+
+
+
+        // gradient.addColorStop(0, '#7a00ff');   // Deep UV Violet
+        // gradient.addColorStop(0.5, '#ff00ff'); // Hot Magenta
+        // gradient.addColorStop(1, '#00f3ff');   // Electric Cyan
+
+        // offCtx.fillStyle = gradient;
+        // *******************************
+
+        offCtx.textBaseline = 'middle';
+        offCtx.textAlign = 'center';
+        offCtx.fillText(this.text, textWidth / 2, textHeight / 2);
+
+        // 2. Prepare Main Canvas
+        if (this.canvas.width !== width || this.canvas.height !== height) {
+            this.canvas.width = width;
+            this.canvas.height = height;
+        }
+        
+        this.ctx.clearRect(0, 0, width, height);
+
+        // 3. Calculate Fuzz Intensity
+        // Smooth transition could be added here, but direct toggle is snappier for this effect
+        const intensity = this.isHovering ? this.hoverIntensity : this.baseIntensity;
+
+        // 4. The Fuzzy Logic (Horizontal Slice & Shift)
+        // We take horizontal slices of the offscreen text and draw them onto the main canvas
+        // shifted left/right by a random amount based on intensity.
+        
+        // Center the text in the main canvas
+        const destX = (width - textWidth) / 2;
+        const destY = (height - textHeight) / 2;
+
+        for (let j = 0; j < textHeight; j++) {
+            // Calculate random horizontal shift
+            const dx = Math.floor(intensity * (Math.random() - 0.5) * this.fuzzRange);
+            
+            // Draw 1-pixel tall slice
+            // source: offscreen, x=0, y=j, w=textWidth, h=1
+            // dest: main, x=destX+dx, y=destY+j, ...
+            this.ctx.drawImage(
+                offscreen, 
+                0, j, textWidth, 1, 
+                destX + dx, destY + j, textWidth, 1
+            );
+        }
+
+        this.animationId = requestAnimationFrame(this.animate);
+    }
+}
+
+// Initialize when fonts are ready to ensure text draws correctly
+document.fonts.ready.then(() => {
+    new FuzzyText('fuzzy-title');
+});
+//end
 </script>
 </body>
 </html>
