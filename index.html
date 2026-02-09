@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Know Your Rights: ELITE SIMULATOR</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- //added on 8th feb 26 start -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- //end -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
@@ -156,6 +160,11 @@
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-2 relative z-10">
+
+    <!-- //added on 8th feb start -->
+     <div id="light-pillar-bg" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; mix-blend-mode: screen;"></div>
+
+    <!-- //end -->
 
     <div class="scanlines"></div>
 
@@ -2434,6 +2443,222 @@ class FuzzyText {
 document.fonts.ready.then(() => {
     new FuzzyText('fuzzy-title');
 });
+//end
+
+
+//start 
+/* ================= LIGHT PILLAR BACKGROUND (Ported to Vanilla JS) ================= */
+class LightPillar {
+    constructor(elementId, options = {}) {
+        this.container = document.getElementById(elementId);
+        if (!this.container) return;
+
+        // Configuration
+        this.config = {
+            topColor: options.topColor || '#5227FF',
+            bottomColor: options.bottomColor || '#FF9FFC',
+            intensity: options.intensity || 1.0,
+            rotationSpeed: options.rotationSpeed || 0.3,
+            glowAmount: options.glowAmount || 0.002,
+            pillarWidth: options.pillarWidth || 3.0,
+            pillarHeight: options.pillarHeight || 0.4,
+            noiseIntensity: options.noiseIntensity || 0.5,
+            pillarRotation: options.pillarRotation || 25,
+            quality: options.quality || 'high'
+        };
+
+        this.width = this.container.clientWidth;
+        this.height = this.container.clientHeight;
+        this.time = 0;
+        this.mouse = new THREE.Vector2(0, 0);
+
+        this.init();
+    }
+
+    init() {
+        // 1. Setup Three.js Scene
+        this.scene = new THREE.Scene();
+        this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+        // 2. Setup Renderer
+        this.renderer = new THREE.WebGLRenderer({ 
+            antialias: false, 
+            alpha: true, 
+            powerPreference: 'high-performance' 
+        });
+        
+        this.renderer.setSize(this.width, this.height);
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // High quality
+        //this.renderer.setPixelRatio(1); //medium quality
+        this.container.appendChild(this.renderer.domElement);
+
+        // 3. Shaders
+        const vertexShader = `
+            varying vec2 vUv;
+            void main() {
+                vUv = uv;
+                gl_Position = vec4(position, 1.0);
+            }
+        `;
+
+        // Inject configuration into shader string
+        const fragmentShader = `
+            precision highp float;
+            uniform float uTime;
+            uniform vec2 uResolution;
+            uniform vec3 uTopColor;
+            uniform vec3 uBottomColor;
+            uniform float uIntensity;
+            uniform float uGlowAmount;
+            uniform float uPillarWidth;
+            uniform float uPillarHeight;
+            uniform float uNoiseIntensity;
+            uniform float uRotCos;
+            uniform float uRotSin;
+            uniform float uPillarRotCos;
+            uniform float uPillarRotSin;
+            uniform float uWaveSin;
+            uniform float uWaveCos;
+            varying vec2 vUv;
+
+            const float STEP_MULT = 1.0;
+            const int MAX_ITER = 75;
+            const int WAVE_ITER = 2;
+
+            void main() {
+                vec2 uv = (vUv * 2.0 - 1.0) * vec2(uResolution.x / uResolution.y, 1.0);
+                uv = vec2(uPillarRotCos * uv.x - uPillarRotSin * uv.y, uPillarRotSin * uv.x + uPillarRotCos * uv.y);
+
+                vec3 ro = vec3(0.0, 0.0, -10.0);
+                vec3 rd = normalize(vec3(uv, 1.0));
+
+                float rotC = uRotCos;
+                float rotS = uRotSin;
+
+                vec3 col = vec3(0.0);
+                float t = 0.1;
+                
+                for(int i = 0; i < MAX_ITER; i++) {
+                    vec3 p = ro + rd * t;
+                    p.xz = vec2(rotC * p.x - rotS * p.z, rotS * p.x + rotC * p.z);
+
+                    vec3 q = p;
+                    q.y = p.y * uPillarHeight + uTime;
+                    
+                    float freq = 1.0;
+                    float amp = 1.0;
+                    for(int j = 0; j < WAVE_ITER; j++) {
+                        q.xz = vec2(uWaveCos * q.x - uWaveSin * q.z, uWaveSin * q.x + uWaveCos * q.z);
+                        q += cos(q.zxy * freq - uTime * float(j) * 2.0) * amp;
+                        freq *= 2.0;
+                        amp *= 0.5;
+                    }
+                    
+                    float d = length(cos(q.xz)) - 0.2;
+                    float bound = length(p.xz) - uPillarWidth;
+                    float k = 4.0;
+                    float h = max(k - abs(d - bound), 0.0);
+                    d = max(d, bound) + h * h * 0.0625 / k;
+                    d = abs(d) * 0.15 + 0.01;
+
+                    float grad = clamp((15.0 - p.y) / 30.0, 0.0, 1.0);
+                    col += mix(uBottomColor, uTopColor, grad) / d;
+
+                    t += d * STEP_MULT;
+                    if(t > 50.0) break;
+                }
+
+                float widthNorm = uPillarWidth / 3.0;
+                // glSL tanh approximation or standard if supported, usually standard is fine in WebGL2
+                // Using simple clamp for safety in WebGL1 context if needed
+                col = col * uGlowAmount / widthNorm; 
+                
+                // Simple noise
+                col -= fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) / 15.0 * uNoiseIntensity;
+                
+                gl_FragColor = vec4(col * uIntensity, 1.0);
+            }
+        `;
+
+        // 4. Calculate Uniforms
+        const pillarRotRad = (this.config.pillarRotation * Math.PI) / 180;
+        
+        // 5. Create Material
+        this.material = new THREE.ShaderMaterial({
+            vertexShader,
+            fragmentShader,
+            uniforms: {
+                uTime: { value: 0 },
+                uResolution: { value: new THREE.Vector2(this.width, this.height) },
+                uTopColor: { value: new THREE.Color(this.config.topColor) },
+                uBottomColor: { value: new THREE.Color(this.config.bottomColor) },
+                uIntensity: { value: this.config.intensity },
+                uGlowAmount: { value: this.config.glowAmount },
+                uPillarWidth: { value: this.config.pillarWidth },
+                uPillarHeight: { value: this.config.pillarHeight },
+                uNoiseIntensity: { value: this.config.noiseIntensity },
+                uRotCos: { value: 1.0 },
+                uRotSin: { value: 0.0 },
+                uPillarRotCos: { value: Math.cos(pillarRotRad) },
+                uPillarRotSin: { value: Math.sin(pillarRotRad) },
+                uWaveSin: { value: Math.sin(0.4) },
+                uWaveCos: { value: Math.cos(0.4) }
+            }
+        });
+
+        // 6. Create Plane
+        const geometry = new THREE.PlaneGeometry(2, 2);
+        const mesh = new THREE.Mesh(geometry, this.material);
+        this.scene.add(mesh);
+
+        // 7. Event Listeners
+        window.addEventListener('resize', () => this.resize());
+
+        // 8. Start Loop
+        this.animate = this.animate.bind(this);
+        requestAnimationFrame(this.animate);
+    }
+
+    resize() {
+        this.width = this.container.clientWidth;
+        this.height = this.container.clientHeight;
+        this.renderer.setSize(this.width, this.height);
+        this.material.uniforms.uResolution.value.set(this.width, this.height);
+    }
+
+    animate() {
+        this.time += 0.016 * this.config.rotationSpeed;
+        
+        this.material.uniforms.uTime.value = this.time;
+        this.material.uniforms.uRotCos.value = Math.cos(this.time * 0.3);
+        this.material.uniforms.uRotSin.value = Math.sin(this.time * 0.3);
+
+        this.renderer.render(this.scene, this.camera);
+        requestAnimationFrame(this.animate);
+    }
+}
+
+// --- INITIALIZE BACKGROUND ---
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. Initialize Fuzzy Text
+    document.fonts.ready.then(() => {
+        new FuzzyText('fuzzy-title');
+    });
+
+    // 2. Initialize Light Pillar Background
+    new LightPillar('light-pillar-bg', {
+        topColor: "#5227FF",
+        bottomColor: "#FF9FFC",
+        intensity: 1.0,
+        rotationSpeed: 0.3,
+        glowAmount: 0.002,
+        pillarWidth: 5.0,
+        pillarHeight: 0.4,
+        noiseIntensity: 0.5,
+        pillarRotation: 25
+    });
+});
+
 //end
 </script>
 </body>
