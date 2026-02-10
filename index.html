@@ -31,6 +31,8 @@
             user-select: none;
         }
 
+        
+
         /* FONTS */
         .font-orbitron { font-family: 'Orbitron', sans-serif; }
         .font-mono { font-family: 'Share Tech Mono', monospace; }
@@ -241,6 +243,120 @@
         @media (min-width: 768px) {
             #view-game .fixed-image-area { height: 220px; } /* Desktop height */
         }
+
+        /* //:start */
+
+        /* --- ELECTRIC BORDER (Source Accurate) --- */
+        /* --- ELECTRIC BORDER (High Fidelity) --- */
+        .electric-border {
+            --electric-border-color: #5227FF; /* Default */
+            /* Fallback for browsers without oklch support */
+            --electric-light-color: #8c7aff; 
+            
+            position: relative;
+            border-radius: inherit;
+            overflow: visible;
+            isolation: isolate;
+        }
+
+        /* Support for modern browsers for the exact color match */
+        @supports (color: oklch(from red l c h)) {
+            .electric-border {
+                --electric-light-color: oklch(from var(--electric-border-color) l c h);
+            }
+            .eb-glow-1 {
+                border: 2px solid oklch(from var(--electric-border-color) l c h / 0.6);
+            }
+        }
+
+        .eb-canvas-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .eb-canvas {
+            display: block;
+            /* Optional: This makes it look "electric" against the dark background */
+            mix-blend-mode: screen;
+        }
+
+        .eb-content {
+            position: relative;
+            border-radius: inherit;
+            z-index: 1;
+            height: 100%; /* Fix for content sizing */
+            /* Solid background needed to hide the back half of the sparks */
+            background: #111827;
+
+            /* 2. The 0.5px Neon Border */
+            border: 1px solid var(--electric-color);
+            
+            /* 3. The Neon Glow (Outer + Inner) */
+            box-shadow: 
+                0 0 8px -2px var(--electric-color),       /* Outer gentle glow */
+                inset 0 0 10px -4px var(--electric-color); /* Inner depth glow */
+            
+            /* Smooth transition for hover effects */
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .eb-layers {
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .eb-glow-1,
+        .eb-glow-2,
+        .eb-background-glow {
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            box-sizing: border-box;
+        }
+
+        .eb-glow-1 {
+            /* Fallback if @supports fails */
+            border: 2px solid var(--electric-border-color);
+            opacity: 0.6;
+            filter: blur(1px);
+        }
+
+        .eb-glow-2 {
+            border: 2px solid var(--electric-light-color);
+            filter: blur(4px);
+        }
+
+        .eb-background-glow {
+            z-index: -1;
+            transform: scale(1.1);
+            filter: blur(32px);
+            opacity: 0.3;
+            /* background: linear-gradient(-30deg, var(--electric-light-color), transparent, var(--electric-border-color)); */
+        }
+
+        .eb-button-container:hover {
+            filter: saturate(1.5);
+            /* background-color: #b19eef1a; */
+            transition: all .3s;
+            transform: scale(1.1);
+            box-shadow: 0 7.5px 14px #b19eef1a;
+            
+        }
+
+        .eb-content:hover{
+            background: linear-gradient(-25deg, #5227FF, transparent, #5227FF) !important;
+        }
+
+
+        /* //end */
 
     </style>
 </head>
@@ -1866,7 +1982,7 @@
             achievements_title: "TROFEOS", achievement: "LOGRO DESBLOQUEADO",
             operator: "OPERADOR", live: "ENCUENTRO EN VIVO",
             read_law: "LEER LA LEY",
-            pass: "APROBADO", fail: "FALLIDO",
+            pass: "SUPERÓ", fail: "FALLIDO",
             mission_acc: "MISIÓN CUMPLIDA", mission_fail: "MISIÓN FALLIDA"
         }
     };
@@ -2012,19 +2128,69 @@ const game = {
 
     showModules: () => {
         game.hideAll();
-        document.getElementById('view-modules').classList.remove('hidden');
-        document.getElementById('view-modules').classList.add('flex');
+        const view = document.getElementById('view-modules');
+        view.classList.remove('hidden');
+        view.classList.add('flex');
+        
+        // Prevent horizontal scroll from electric glow spilling out
+        // Add overflow-x-hidden to the main container or body if needed
+        document.body.style.overflowX = 'hidden'; 
         
         const grid = document.getElementById('modules-grid');
         grid.innerHTML = '';
-        
-        game.getContent().modules.forEach(mod => {
-            const btn = document.createElement('button');
-            btn.className = "module-card p-6 rounded-lg text-left flex flex-col justify-between h-40 group";
-            btn.innerHTML = `<div><div class="text-3xl mb-2">${mod.icon}</div><h3 class="font-orbitron text-xl text-white group-hover:text-neon-blue">${mod.title}</h3></div><p class="font-mono text-xs text-gray-400">${mod.desc}</p>`;
-            btn.onclick = () => { audio.play('click'); game.showLevels(mod); };
-            grid.appendChild(btn);
+        // Ensure grid has padding for the glow to spill into
+        grid.className = "grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 w-full max-w-5xl mx-auto p-4 md:p-8 overflow-x-hidden custom-scroll"; 
+
+        // Define distinct neon colors
+        const neonColors = [
+            "#00f3ff", // Neon Blue
+            "#0aff00", // Neon Green
+            "#ff003c", // Neon Red
+            "#fcee0a"  // Neon Yellow
+        ];
+
+        game.getContent().modules.forEach((mod, index) => {
+            // 1. Create Wrapper (Simple container)
+            // Added 'mx-4' and 'mb-10' to give space for the sparks so they don't clip or overlap
+            const wrapper = document.createElement('div');
+            wrapper.className = "relative h-24 md:h-40 group cursor-pointer mx-2 mb-2 md:mb-6"; 
+            wrapper.onclick = () => { audio.play('click'); game.showLevels(mod); };
+
+            // 2. Inner Content
+            // Must include bg-gray-900 to act as the mask
+            wrapper.innerHTML = `
+                <div class="w-full h-full rounded-xl p-4 md:p-6 flex flex-row md:flex-col items-center md:items-start justify-between transition-colors relative z-10">
+                    
+                    <div class="flex flex-row md:flex-col items-center md:items-start gap-4 md:gap-0 w-full">
+                        <div class="text-3xl md:text-4xl md:mb-2 shrink-0 transition-transform group-hover:scale-110 duration-300 text-center w-12 md:w-auto">${mod.icon}</div>
+                        
+                        <div class="flex-grow min-w-0"> <h3 class="font-orbitron text-base md:text-xl text-white group-hover:text-neon-blue transition-colors leading-none mb-1 md:mb-2 truncate">${mod.title}</h3>
+                            <p class="font-mono text-[10px] md:text-xs text-gray-500 leading-tight line-clamp-2 md:line-clamp-3">${mod.desc}</p>
+                        </div>
+                    </div>
+
+                    <div class="text-gray-600 group-hover:text-white transition-colors text-xl md:hidden shrink-0 ml-2">
+                        →
+                    </div>
+                </div>
+            `;
+
+            grid.appendChild(wrapper);
+
+            // 3. Initialize Electric Border with Custom Colors & Thinner Lines
+            setTimeout(() => {
+                new ElectricBorder(wrapper, {
+                    color: neonColors[index % neonColors.length], // Cycle through colors
+                    speed: 1,
+                    chaos: 0.1,       // Keep it fairly steady
+                    thickness: 0.5,     // THINNER border (was 2)
+                    borderRadius: 12.5  // Matches rounded-2xl
+                });
+            }, 0);
         });
+        
+        // Trigger a resize event to ensure borders calculate correctly immediately
+        setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
     },
 
     showLevels: (mod) => {
@@ -2828,6 +2994,266 @@ class LightPillar {
         requestAnimationFrame(this.animate);
     }
 }
+
+
+//added on 9th feb 26 start
+/* ================= ELECTRIC BORDER (Ported to Vanilla JS) ================= */
+/* ================= ELECTRIC BORDER (Optimized) ================= */
+/* ================= ELECTRIC BORDER (Exact Port) ================= */
+class ElectricBorder {
+    constructor(element, options = {}) {
+        this.wrapper = element;
+        this.color = options.color || '#5227FF';
+        this.speed = options.speed || 1;
+        this.chaos = options.chaos || 0.12;
+        this.thickness = options.thickness || -1;
+        this.borderRadius = options.borderRadius || 16;
+
+        this.canvas = null;
+        this.ctx = null;
+        this.time = 0;
+        this.lastTime = performance.now();
+        this.animationId = null;
+        this.resizeObserver = null;
+
+        // Constants from original
+        this.displacement = 60;
+        this.borderOffset = 60;
+
+        this.init();
+    }
+
+    init() {
+        // 1. Setup Wrapper
+        this.wrapper.classList.add('electric-border');
+        this.wrapper.classList.add('eb-button-container');
+        
+        
+        this.wrapper.style.setProperty('--electric-color', this.color);
+        this.wrapper.style.borderRadius = `${this.borderRadius}px`;
+        // We can remove the property setting for border-color since we removed layers
+
+        // 2. Create Content Container (Moves existing card content inside)
+        const content = document.createElement('div');
+        content.className = 'eb-content';
+        while (this.wrapper.firstChild) {
+            content.appendChild(this.wrapper.firstChild);
+        }
+        this.wrapper.appendChild(content);
+
+        // 3. Create Canvas Container
+        const canvasContainer = document.createElement('div');
+        canvasContainer.className = 'eb-canvas-container';
+        this.canvas = document.createElement('canvas');
+        this.canvas.className = 'eb-canvas';
+        canvasContainer.appendChild(this.canvas);
+        
+        // Insert canvas BEHIND the content in DOM order (Z-index handles visual order)
+        this.wrapper.insertBefore(canvasContainer, content);
+
+        this.ctx = this.canvas.getContext('2d');
+
+        // 4. Resize Logic (Immediate + Observer)
+        this.resizeObserver = new ResizeObserver(() => {
+            this.resize();
+        });
+        this.resizeObserver.observe(this.wrapper);
+        
+        // Force immediate resize to prevent glitch on first load
+        requestAnimationFrame(() => this.resize());
+
+        // 5. Start Animation
+        this.animate = this.animate.bind(this);
+        this.animationId = requestAnimationFrame(this.animate);
+    }
+
+    // --- EXACT MATH FROM SOURCE ---
+    random(x) {
+        return (Math.sin(x * 12.9898) * 43758.5453) % 1;
+    }
+
+    noise2D(x, y) {
+        const i = Math.floor(x);
+        const j = Math.floor(y);
+        const fx = x - i;
+        const fy = y - j;
+
+        const a = this.random(i + j * 57);
+        const b = this.random(i + 1 + j * 57);
+        const c = this.random(i + (j + 1) * 57);
+        const d = this.random(i + 1 + (j + 1) * 57);
+
+        const ux = fx * fx * (3.0 - 2.0 * fx);
+        const uy = fy * fy * (3.0 - 2.0 * fy);
+
+        return a * (1 - ux) * (1 - uy) + b * ux * (1 - uy) + c * (1 - ux) * uy + d * ux * uy;
+    }
+
+    octavedNoise(x, octaves, lacunarity, gain, baseAmplitude, baseFrequency, time, seed, baseFlatness) {
+        let y = 0;
+        let amplitude = baseAmplitude;
+        let frequency = baseFrequency;
+
+        for (let i = 0; i < octaves; i++) {
+            let octaveAmplitude = amplitude;
+            if (i === 0) {
+                octaveAmplitude *= baseFlatness;
+            }
+            y += octaveAmplitude * this.noise2D(frequency * x + seed * 100, time * frequency * 0.3);
+            frequency *= lacunarity;
+            amplitude *= gain;
+        }
+
+        return y;
+    }
+
+    getCornerPoint(centerX, centerY, radius, startAngle, arcLength, progress) {
+        const angle = startAngle + progress * arcLength;
+        return {
+            x: centerX + radius * Math.cos(angle),
+            y: centerY + radius * Math.sin(angle)
+        };
+    }
+
+    getRoundedRectPoint(t, left, top, width, height, radius) {
+        const straightWidth = width - 2 * radius;
+        const straightHeight = height - 2 * radius;
+        const cornerArc = (Math.PI * radius) / 2;
+        const totalPerimeter = 2 * straightWidth + 2 * straightHeight + 4 * cornerArc;
+        const distance = t * totalPerimeter;
+
+        let accumulated = 0;
+
+        // Top edge
+        if (distance <= accumulated + straightWidth) {
+            const progress = (distance - accumulated) / straightWidth;
+            return { x: left + radius + progress * straightWidth, y: top };
+        }
+        accumulated += straightWidth;
+
+        // Top-right corner
+        if (distance <= accumulated + cornerArc) {
+            const progress = (distance - accumulated) / cornerArc;
+            return this.getCornerPoint(left + width - radius, top + radius, radius, -Math.PI / 2, Math.PI / 2, progress);
+        }
+        accumulated += cornerArc;
+
+        // Right edge
+        if (distance <= accumulated + straightHeight) {
+            const progress = (distance - accumulated) / straightHeight;
+            return { x: left + width, y: top + radius + progress * straightHeight };
+        }
+        accumulated += straightHeight;
+
+        // Bottom-right corner
+        if (distance <= accumulated + cornerArc) {
+            const progress = (distance - accumulated) / cornerArc;
+            return this.getCornerPoint(left + width - radius, top + height - radius, radius, 0, Math.PI / 2, progress);
+        }
+        accumulated += cornerArc;
+
+        // Bottom edge
+        if (distance <= accumulated + straightWidth) {
+            const progress = (distance - accumulated) / straightWidth;
+            return { x: left + width - radius - progress * straightWidth, y: top + height };
+        }
+        accumulated += straightWidth;
+
+        // Bottom-left corner
+        if (distance <= accumulated + cornerArc) {
+            const progress = (distance - accumulated) / cornerArc;
+            return this.getCornerPoint(left + radius, top + height - radius, radius, Math.PI / 2, Math.PI / 2, progress);
+        }
+        accumulated += cornerArc;
+
+        // Left edge
+        if (distance <= accumulated + straightHeight) {
+            const progress = (distance - accumulated) / straightHeight;
+            return { x: left, y: top + height - radius - progress * straightHeight };
+        }
+        accumulated += straightHeight;
+
+        // Top-left corner
+        const progress = (distance - accumulated) / cornerArc;
+        return this.getCornerPoint(left + radius, top + radius, radius, Math.PI, Math.PI / 2, progress);
+    }
+
+    resize() {
+        const rect = this.wrapper.getBoundingClientRect();
+        // If hidden (display:none), dimensions are 0. Don't resize yet.
+        if (rect.width === 0 || rect.height === 0) return;
+
+        const width = rect.width + this.borderOffset * 2;
+        const height = rect.height + this.borderOffset * 2;
+
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        this.canvas.width = width * dpr;
+        this.canvas.height = height * dpr;
+        this.canvas.style.width = `${width}px`;
+        this.canvas.style.height = `${height}px`;
+        this.ctx.scale(dpr, dpr);
+        
+        this.width = width;
+        this.height = height;
+    }
+
+    animate(currentTime) {
+        if (!this.ctx || !this.width) {
+            this.animationId = requestAnimationFrame(this.animate);
+            return;
+        }
+
+        const deltaTime = (currentTime - this.lastTime) / 1000;
+        this.time += deltaTime * this.speed;
+        this.lastTime = currentTime;
+
+        // Clear canvas
+        this.ctx.clearRect(0, 0, this.width, this.height);
+        
+        this.ctx.strokeStyle = this.color;
+        this.ctx.lineWidth = this.thickness;
+        this.ctx.lineCap = 'round';
+        this.ctx.lineJoin = 'round';
+
+        const scale = this.displacement;
+        const left = this.borderOffset;
+        const top = this.borderOffset;
+        const borderWidth = this.width - 2 * this.borderOffset;
+        const borderHeight = this.height - 2 * this.borderOffset;
+        const radius = this.borderRadius;
+
+        // Calculate perimeter approximation
+        const approximatePerimeter = 2 * (borderWidth + borderHeight) + 2 * Math.PI * radius;
+        const sampleCount = Math.floor(approximatePerimeter / 2);
+
+        this.ctx.beginPath();
+        for (let i = 0; i <= sampleCount; i++) {
+            const progress = i / sampleCount;
+            const point = this.getRoundedRectPoint(progress, left, top, borderWidth, borderHeight, radius);
+
+            const xNoise = this.octavedNoise(
+                progress * 8, 10, 1.6, 0.7, this.chaos, 10, this.time, 0, 0
+            );
+
+            const yNoise = this.octavedNoise(
+                progress * 8, 10, 1.6, 0.7, this.chaos, 10, this.time, 1, 0
+            );
+
+            const displacedX = point.x + xNoise * scale;
+            const displacedY = point.y + yNoise * scale;
+
+            if (i === 0) this.ctx.moveTo(displacedX, displacedY);
+            else this.ctx.lineTo(displacedX, displacedY);
+        }
+        
+        this.ctx.closePath();
+        this.ctx.stroke();
+
+        this.animationId = requestAnimationFrame(this.animate);
+    }
+}
+ 
+//end
 
 // --- INITIALIZE BACKGROUND ---
 document.addEventListener("DOMContentLoaded", () => {
