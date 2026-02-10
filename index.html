@@ -64,14 +64,65 @@
         }
 
         /* CHOICES GRID */
-        .choices-grid { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
-        @media (min-width: 768px) { .choices-grid { grid-template-columns: 1fr 1fr; } }
+        /* .choices-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+        @media (min-width: 768px) { .choices-grid { grid-template-columns: 1fr 1fr; } } */
 
-        .choice-btn {
+        /* 2x2 Grid, tight gap for mobile polish */
+        /* .choices-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; width: 100%; }
+        @media (min-width: 768px) { .choices-grid { gap: 1rem; } } */
+
+        /* GRID CONTAINER */
+        .choices-grid { 
+            display: grid; 
+            gap: 0.5rem; 
+            width: 100%; 
+            padding-bottom: 5px;
+        }
+        @media (min-width: 768px) { .choices-grid { gap: 1rem; } }
+
+        /* Utility to make a button span full width (for odd numbers) */
+        .col-span-2 { grid-column: span 2; }
+
+        /* .choice-btn {
             background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(75, 85, 99, 0.6);
             padding: 1rem; text-align: left; transition: all 0.2s ease;
             position: relative; overflow: hidden;
+        } */
+
+        /* .choice-btn {
+            background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(75, 85, 99, 0.6);
+            padding: 0.75rem; text-align: left; transition: all 0.2s ease;
+            position: relative; overflow: hidden;
+            font-size: 0.75rem; /* Smaller text for mobile */
+            /* line-height: 1.25;
+        } */ 
+        
+        /* @media (min-width: 768px) {
+            .choice-btn { padding: 1rem; font-size: 0.9rem; }
+            .choices-grid { gap: 0.75rem; }
+        } */
+
+        /* Compact buttons for mobile (Kahoot style) */
+        .choice-btn {
+            background: rgba(30, 41, 59, 0.6); 
+            border: 1px solid rgba(75, 85, 99, 0.6);
+            padding: 0.5rem; 
+            text-align: left; 
+            transition: all 0.2s ease;
+            position: relative; 
+            overflow: hidden;
+            font-size: 0.75rem; /* Readable small text */
+            line-height: 1.2;
+            min-height: 3.5rem; /* Fixed height for consistency */
+            display: flex;
+            align-items: center;
         }
+        @media (min-width: 768px) {
+            .choice-btn { padding: 1rem; font-size: 1rem; min-height: 4rem; }
+        }
+
+
+
         .choice-btn:hover:not(:disabled) {
             background: rgba(0, 243, 255, 0.1); border-color: var(--neon-blue); transform: translateY(-2px);
         }
@@ -178,6 +229,19 @@
 
         /* //end */
 
+        /* FORCE LAYOUT STABILITY */
+        #view-game .fixed-image-area {
+            height: 95px;      /* Locked height for mobile */
+            flex-shrink: 0;     /* NEVER disappear */
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid #374151;
+        }
+        @media (min-width: 768px) {
+            #view-game .fixed-image-area { height: 220px; } /* Desktop height */
+        }
+
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-2 relative z-10">
@@ -231,7 +295,8 @@
 
                 <!-- <h1 class="font-orbitron text-5xl md:text-7xl text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-white mb-2" data-text="title">KNOW YOUR RIGHTS</h1> -->
                  <!-- Added on feb 7th 2025 start -->
-                  <div style="position: relative; width: 100%; height: 120px; display: flex; justify-content: center; align-items: center; margin-bottom: 2rem;">
+                  <!-- <div style="position: relative; width: 100%; height: 120px; display: flex; justify-content: center; align-items: center; margin-bottom: 2rem;"> -->
+                  <div style="position: relative; width: 100%; height: 80px; min-height: 80px; display: flex; justify-content: center; align-items: center; margin-bottom: 2rem;" class="md:h-[120px]">
                     <canvas id="fuzzy-title"></canvas>
                     <h1 class="sr-only">KNOW YOUR RIGHTS</h1>
     
@@ -254,7 +319,8 @@
                 </div>
             </div>
 
-            <div id="view-modules" class="hidden absolute inset-0 p-8 flex flex-col">
+            <!-- <div id="view-modules" class="hidden absolute inset-0 p-8 flex flex-col"> -->
+            <div id="view-modules" class="hidden absolute inset-0 p-4 md:p-8 flex flex-col">
                 <div class="flex justify-between items-center mb-6 border-b border-gray-800 pb-2">
                     <h2 class="font-orbitron text-3xl text-white" data-text="select_module">SELECT MODULE</h2>
                     <button onclick="game.showDashboard()" class="font-mono text-sm text-neon-blue hover:text-white border border-neon-blue px-3 py-1 rounded" data-text="dashboard">LEADERBOARD</button>
@@ -263,7 +329,8 @@
                 </div>
             </div>
 
-            <div id="view-levels" class="hidden absolute inset-0 p-8 flex flex-col">
+            <!-- <div id="view-levels" class="hidden absolute inset-0 p-8 flex flex-col"> -->
+            <div id="view-levels" class="hidden absolute inset-0 p-4 md:p-8 flex flex-col">
                 <div class="flex items-center gap-4 mb-6 border-b border-gray-800 pb-2">
                     <button onclick="game.showModules()" class="text-gray-500 hover:text-white transition-colors" data-text="back">← BACK</button>
                     <h2 id="lvl-select-title" class="font-orbitron text-3xl text-white" data-text="levels">LEVELS</h2>
@@ -272,26 +339,44 @@
                 </div>
             </div>
 
-            <div id="view-game" class="hidden absolute inset-0 flex flex-col">
-                <div class="h-48 w-full relative overflow-hidden border-b border-gray-700">
+            <div id="view-game" class="hidden absolute inset-0 flex flex-col bg-gray-900">
+                <!-- <div class="h-32 md:h-48 w-full relative overflow-hidden border-b border-gray-700 shrink-0"> -->
+                <!-- <div class="flex-1 min-h-0 max-h-32 md:max-h-48 w-full relative overflow-hidden border-b border-gray-700 shrink"> -->
+                    <div class="fixed-image-area">
                     <div id="timer-container"><div id="timer-bar"></div></div>
                     <div id="scene-art" class="scene-box"></div>
                     <!-- <div class="scene-overlay"></div>  -->
-                    <div class="absolute bottom-0 left-0 w-full p-4 flex justify-between items-end z-10">
-                    </div>
-                    <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-gray-900 to-transparent flex justify-between items-end">
-                        <div>
+                    <!-- <div class="absolute bottom-0 left-0 w-full p-4 flex justify-between items-end z-10">
+                    </div> -->
+                    <!-- <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-gray-900 to-transparent flex justify-between items-end"> -->
+                    <div class="absolute bottom-0 left-0 w-full p-2 md:p-4 bg-gradient-to-t from-gray-900 to-transparent flex justify-between items-end">
+                        <!-- <div>
                             <div id="game-badge" class="font-mono text-[10px] bg-red-900/50 text-red-200 px-2 rounded inline-block mb-1">LIVE ENCOUNTER</div>
                             <h2 id="game-title" class="font-orbitron text-xl text-white">SCENARIO TITLE</h2>
+                        </div> -->
+                        <div>
+                            <div id="game-badge" class="font-mono text-[9px] md:text-[10px] bg-red-900/50 text-red-200 px-2 rounded inline-block mb-1">LIVE ENCOUNTER</div>
+                            <h2 id="game-title" class="font-orbitron text-base md:text-xl text-white leading-none shadow-black drop-shadow-md">SCENARIO</h2>
                         </div>
                     </div>
                 </div>
 
-                <div class="flex-grow p-6 flex flex-col overflow-hidden bg-gray-900/50">
-                    <div id="scenario-scroll" class="flex-grow overflow-y-auto custom-scroll mb-6 pr-2">
-                        <p id="scenario-text" class="font-mono text-lg text-gray-200 leading-relaxed"></p>
+                <!-- <div class="flex-grow p-3 md:p-6 flex flex-col overflow-hidden bg-gray-900/50"> -->
+                <!-- <div class="flex-grow p-3 md:p-6 flex flex-col justify-between overflow-hidden bg-gray-900/50"> -->
+                <div class="flex-grow flex flex-col justify-between p-3 md:p-6 overflow-hidden min-h-0">
+                    <!-- <div id="scenario-scroll" class="flex-grow overflow-y-auto custom-scroll mb-2 md:mb-6 pr-2 min-h-[50px]"> -->
+                    <!-- <div id="scenario-scroll" class="w-full mb-3 h-auto shrink-0 flex items-center">
+                        <p id="scenario-text" class="font-mono text-base md:text-lg text-gray-200 leading-relaxed"></p>
+                    </div> -->
+                    <!-- <div id="scenario-scroll" class="flex-1 flex items-center justify-center overflow-y-auto mb-2">
+                        <p id="scenario-text" class="font-mono text-sm md:text-xl text-gray-200 leading-snug md:leading-relaxed text-center"></p>
+                    </div> -->
+                    <div id="scenario-scroll" class="flex-1 overflow-y-auto custom-scroll flex items-center justify-center mb-2">
+                        <p id="scenario-text" class="font-mono text-sm md:text-xl text-gray-200 leading-relaxed text-center"></p>
                     </div>
-                    <div id="choices-container" class="choices-grid h-auto shrink-0">
+                    <!-- <div id="choices-container" class="choices-grid h-auto shrink-0"> -->
+                    <!-- <div id="choices-container" class="choices-grid h-auto shrink-0 pb-1"></div> -->
+                     <div id="choices-container" class="choices-grid shrink-0"></div>
                     </div>
                 </div>
             </div>
@@ -1769,7 +1854,7 @@
             operator: "OPERATOR", live: "LIVE ENCOUNTER",
             read_law: "READ THE LAW",
             pass: "PASSED", fail: "FAILED",
-            mission_acc: "MISSION ACCOMPLISHED", mission_fail: "MISSION FAILED"
+            mission_acc: "MISSION PASSED", mission_fail: "MISSION FAILED"
         },
         es: {
             title: "KNOW YOUR RIGHTS", subtitle: "SIMULADOR LEGAL TÁCTICO",
@@ -1887,7 +1972,7 @@ const game = {
         // Update Summary Screen Titles Live
         if(!document.getElementById('view-summary').classList.contains('hidden')) {
              // Simple check if we won or lost based on current text
-             const isWin = document.getElementById('sum-title').innerText.includes("ACCOMPLISHED") || document.getElementById('sum-title').innerText.includes("CUMPLIDA");
+             const isWin = document.getElementById('sum-title').innerText.includes("PASSED") || document.getElementById('sum-title').innerText.includes("CUMPLIDA");
              
              document.getElementById('sum-title').innerText = isWin ? textData[l].mission_acc : textData[l].mission_fail;
              document.getElementById('sum-result').innerText = isWin ? textData[l].pass : textData[l].fail;
@@ -2069,65 +2154,146 @@ const game = {
         game.renderNode();
     },
 
-    renderNode: () => {
-            const node = game.state.currentNode;
-            document.getElementById('scenario-text').textContent = node.text;
+    // renderNode: () => {
+    //         const node = game.state.currentNode;
+    //         document.getElementById('scenario-text').textContent = node.text;
             
-            // Set Image
-            const imgUrl = node.img || getImg('SCENARIO');
-            document.getElementById('scene-art').style.backgroundImage = `url('${imgUrl}')`;
+    //         // Set Image
+    //         const imgUrl = node.img || getImg('SCENARIO');
+    //         document.getElementById('scene-art').style.backgroundImage = `url('${imgUrl}')`;
 
-            const grid = document.getElementById('choices-container');
-            grid.innerHTML = '';
+    //         const grid = document.getElementById('choices-container');
+    //         grid.innerHTML = '';
 
-            // --- IMPROVED SHUFFLE (Fisher-Yates Algorithm) ---
-            const choices = [...node.choices];
-            for (let i = choices.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [choices[i], choices[j]] = [choices[j], choices[i]];
+    //         // --- IMPROVED SHUFFLE (Fisher-Yates Algorithm) ---
+    //         const choices = [...node.choices];
+    //         for (let i = choices.length - 1; i > 0; i--) {
+    //             const j = Math.floor(Math.random() * (i + 1));
+    //             [choices[i], choices[j]] = [choices[j], choices[i]];
+    //         }
+
+    //         // Colors for A, B, C, D...
+    //         const badgeColors = ['#00f3ff', '#0aff00', '#fcee0a', '#bd00ff'];
+
+    //         choices.forEach((c, index) => {
+    //             const btn = document.createElement('button');
+    //             btn.className = "choice-btn text-gray-200 font-mono text-sm rounded flex items-center gap-3 group";
+                
+    //             // Determine Letter (A=65, B=66, etc.)
+    //             const letter = String.fromCharCode(65 + index);
+    //             const color = badgeColors[index % badgeColors.length];
+
+    //             // Create Circular Badge HTML with dynamic color
+    //             btn.innerHTML = `
+    //                 <span class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full border-2 font-bold font-orbitron transition-all group-hover:scale-110" 
+    //                       style="border-color: ${color}; color: ${color}; text-shadow: 0 0 5px ${color}; box-shadow: inset 0 0 5px ${color}40;">
+    //                     ${letter}
+    //                 </span>
+    //                 <span class="text-left leading-tight">${c.text}</span>
+    //             `;
+                
+    //             btn.onclick = () => {
+    //                 timer.stop();
+    //                 // Feedback Visuals
+    //                 if(c.type === 'correct') btn.classList.add('correct-state');
+    //                 else if(c.type === 'neutral') btn.style.background = 'rgba(255, 200, 0, 0.2)';
+    //                 else btn.classList.add('wrong-state');
+                    
+    //                 Array.from(grid.children).forEach(b => b.disabled = true);
+    //                 game.handleChoice(c);
+    //             };
+    //             grid.appendChild(btn);
+    //         });
+
+    //         timer.start(15000, () => {
+    //             const badChoice = node.choices.find(c => c.type === 'wrong') || node.choices[0];
+    //             const panicTitle = game.state.lang === 'en' ? "TIME EXPIRED" : "TIEMPO AGOTADO";
+    //             const panicDesc = game.state.lang === 'en' ? "You froze." : "Te congelaste.";
+    //             game.handleChoice({ ...badChoice, fb: { title: panicTitle, legal: "PANIC", effect: "FAIL", desc: panicDesc } });
+    //         });
+    //     },
+
+    //start
+
+    renderNode: () => {
+        const node = game.state.currentNode;
+        document.getElementById('scenario-text').textContent = node.text;
+        
+        // Set Image
+        const imgUrl = node.img || getImg('SCENARIO');
+        document.getElementById('scene-art').style.backgroundImage = `url('${imgUrl}')`;
+
+        const grid = document.getElementById('choices-container');
+        grid.innerHTML = '';
+        
+        // --- DYNAMIC GRID LOGIC ---
+        const count = node.choices.length;
+        
+        // Reset classes
+        grid.className = 'choices-grid shrink-0'; 
+        
+        // Apply grid columns based on count
+        if (count === 1) {
+            grid.classList.add('grid-cols-1'); // 1 giant button
+        } else {
+            grid.classList.add('grid-cols-2'); // 2 columns for 2, 3, or 4 items
+        }
+
+        // Shuffle choices
+        const choices = [...node.choices];
+        for (let i = choices.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [choices[i], choices[j]] = [choices[j], choices[i]];
+        }
+
+        // Colors
+        const badgeColors = ['#00f3ff', '#0aff00', '#fcee0a', '#bd00ff'];
+
+        choices.forEach((c, index) => {
+            const btn = document.createElement('button');
+            
+            // Base Class
+            let btnClass = "choice-btn text-gray-200 font-mono text-sm rounded flex items-center gap-3 group";
+            
+            // If we have 3 items, make the LAST item span full width (Looks nicer)
+            if (count === 3 && index === 2) {
+                btnClass += " col-span-2 justify-center"; // Center text for the wide button
             }
 
-            // Colors for A, B, C, D...
-            const badgeColors = ['#00f3ff', '#0aff00', '#fcee0a', '#bd00ff'];
+            btn.className = btnClass;
+            
+            const letter = String.fromCharCode(65 + index);
+            const color = badgeColors[index % badgeColors.length];
 
-            choices.forEach((c, index) => {
-                const btn = document.createElement('button');
-                btn.className = "choice-btn text-gray-200 font-mono text-sm rounded flex items-center gap-3 group";
+            btn.innerHTML = `
+                <span class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full border-2 font-bold font-orbitron transition-all group-hover:scale-110" 
+                      style="border-color: ${color}; color: ${color}; text-shadow: 0 0 5px ${color}; box-shadow: inset 0 0 5px ${color}40;">
+                    ${letter}
+                </span>
+                <span class="text-left leading-tight">${c.text}</span>
+            `;
+            
+            btn.onclick = () => {
+                timer.stop();
+                if(c.type === 'correct') btn.classList.add('correct-state');
+                else if(c.type === 'neutral') btn.style.background = 'rgba(255, 200, 0, 0.2)';
+                else btn.classList.add('wrong-state');
                 
-                // Determine Letter (A=65, B=66, etc.)
-                const letter = String.fromCharCode(65 + index);
-                const color = badgeColors[index % badgeColors.length];
+                Array.from(grid.children).forEach(b => b.disabled = true);
+                game.handleChoice(c);
+            };
+            grid.appendChild(btn);
+        });
 
-                // Create Circular Badge HTML with dynamic color
-                btn.innerHTML = `
-                    <span class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full border-2 font-bold font-orbitron transition-all group-hover:scale-110" 
-                          style="border-color: ${color}; color: ${color}; text-shadow: 0 0 5px ${color}; box-shadow: inset 0 0 5px ${color}40;">
-                        ${letter}
-                    </span>
-                    <span class="text-left leading-tight">${c.text}</span>
-                `;
-                
-                btn.onclick = () => {
-                    timer.stop();
-                    // Feedback Visuals
-                    if(c.type === 'correct') btn.classList.add('correct-state');
-                    else if(c.type === 'neutral') btn.style.background = 'rgba(255, 200, 0, 0.2)';
-                    else btn.classList.add('wrong-state');
-                    
-                    Array.from(grid.children).forEach(b => b.disabled = true);
-                    game.handleChoice(c);
-                };
-                grid.appendChild(btn);
-            });
+        timer.start(15000, () => {
+            const badChoice = node.choices.find(c => c.type === 'wrong') || node.choices[0];
+            const panicTitle = game.state.lang === 'en' ? "TIME EXPIRED" : "TIEMPO AGOTADO";
+            const panicDesc = game.state.lang === 'en' ? "You froze." : "Te congelaste.";
+            game.handleChoice({ ...badChoice, fb: { title: panicTitle, legal: "PANIC", effect: "FAIL", desc: panicDesc } });
+        });
+    },
 
-            timer.start(15000, () => {
-                const badChoice = node.choices.find(c => c.type === 'wrong') || node.choices[0];
-                const panicTitle = game.state.lang === 'en' ? "TIME EXPIRED" : "TIEMPO AGOTADO";
-                const panicDesc = game.state.lang === 'en' ? "You froze." : "Te congelaste.";
-                game.handleChoice({ ...badChoice, fb: { title: panicTitle, legal: "PANIC", effect: "FAIL", desc: panicDesc } });
-            });
-        },
-
+    //end
     handleChoice: (c) => {
         if(c.type === 'correct') { audio.play('correct'); game.state.score += 100; }
         else if (c.type === 'neutral') { audio.play('click'); game.state.score += 50; }
