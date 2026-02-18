@@ -111,5 +111,5 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## 👨‍💻 Author
 
 **TTR**
-* GitHub: [@yourusername](https://github.com/DevvNirvana)
+* GitHub: [@DevvNirvana](https://github.com/DevvNirvana)
 * Live App: [know-your-rights-sim.vercel.app](https://know-your-rights-sim.vercel.app/)
