@@ -12,6 +12,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
+    <!-- //added on 18th feb 26 start -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#00f3ff">
+    <link rel="apple-touch-icon" href="https://dl.dropboxusercontent.com/scl/fi/4vn5nhymj9vxfgqpl5f5r/appicon192.png?rlkey=hwr5qo1o87nmmbceu60fjww0w&st=tn914mca">
+
+    <!-- //end -->
+
+
     <style>
         :root {
             --bg-color: #050505;
@@ -3346,6 +3354,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
 //end
 </script>
+
+<!-- //added on 18th feb start -->
+ <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('Service Worker registered!', reg))
+                .catch(err => console.log('Service Worker failed', err));
+        });
+    }
+</script>
+
+<!-- //end -->
+
 </body>
 </html>
                             
