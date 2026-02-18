@@ -1,0 +1,21 @@
+{
+  "name": "Know Your Rights: Elite Simulator",
+  "short_name": "KYR Sim",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#00f3ff",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://dl.dropboxusercontent.com/scl/fi/4vn5nhymj9vxfgqpl5f5r/appicon192.png?rlkey=hwr5qo1o87nmmbceu60fjww0w&st=faj3lps7",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://dl.dropboxusercontent.com/scl/fi/mirqqsw98fl06pldoma3f/appicon512.png?rlkey=vyhjg95q33rxe2kid54nc1qqw&st=7gptkpj4",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
