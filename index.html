@@ -578,6 +578,98 @@
             text-shadow: 0 0 8px var(--neon-blue);
         }
 
+        /* Spider-Verse Glitch Animation */
+        #boot-status-box::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border: 2px solid var(--neon-red);
+            opacity: 0;
+            z-index: -1;
+        }
+
+        #boot-status-box.glitching::before {
+            animation: spiderGlitch 0.4s steps(2) infinite;
+        }
+
+        @keyframes spiderGlitch {
+            0% { opacity: 0.6; transform: translate(-4px, 2px) skew(5deg); clip-path: inset(10% 0 40% 0); }
+            50% { opacity: 0.6; transform: translate(4px, -2px) skew(-5deg); clip-path: inset(50% 0 10% 0); }
+            100% { opacity: 0; }
+        }
+
+        /* Sidebar for Logs */
+        #boot-logs-sidebar {
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 280px;
+            background: linear-gradient(90deg, rgba(0, 243, 255, 0.05) 0%, transparent 100%);
+            border-right: 1px solid rgba(0, 243, 255, 0.1);
+            padding: 30px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            z-index: 70;
+            pointer-events: none;
+        }
+
+        /* Make the timestamp look like metadata */
+        /* #boot-logs-sidebar span:first-child {
+            font-weight: 250;
+            letter-spacing: 1px;
+        } */
+
+        /* Polished Authorization Card */
+        #boot-status-box {
+            background: rgba(5, 10, 20, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 159, 252, 0.5); /* Brighter Pink Border */
+            box-shadow: 0 0 60px rgba(0, 0, 0, 1), 0 0 30px rgba(255, 159, 252, 0.2);
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 450px;
+            position: relative;
+            z-index: 80;
+        }
+
+
+
+        /* Scanning Line Animation for the Card */
+        #boot-status-box::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: var(--neon-blue);
+            opacity: 0.3;
+            box-shadow: 0 0 10px var(--neon-blue);
+            animation: cardScan 3s linear infinite;
+        }
+
+        @keyframes cardScan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        .progress-rail {
+            width: 100%; height: 2px;
+            background: rgba(255, 255, 255, 0.05);
+            margin-top: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #boot-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #00f3ff, #FF9FFC);
+            width: 0%;
+            box-shadow: 0 0 15px #00f3ff;
+            transition: width 0.5s ease-in-out;
+        }
+
+
+
 
         /* //end */
 
@@ -684,6 +776,28 @@
 
                 <!-- //end -->
             </div>
+
+            <!-- //added by t start -->
+            <div id="view-boot" class="hidden absolute inset-0 z-[60] bg-black overflow-hidden flex-col p-6 font-mono text-xs md:text-sm">
+                <div id="boot-grid-container" class="absolute inset-0 z-0 opacity-40"></div>
+                
+                <div id="boot-logs" class="relative z-10 flex flex-col gap-1 text-[var(--neon-blue)] drop-shadow-[0_0_5px_rgba(0,243,255,0.5)]">
+                    </div>
+
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div id="boot-status-box" class="glass-panel p-8 border-2 border-[var(--neon-blue)] opacity-0 scale-90 transition-all duration-500">
+                        <div class="text-center">
+                            <div class="text-[var(--neon-blue)] text-[10px] tracking-[0.3em] mb-2 animate-pulse">AUTHORIZING ACCESS</div>
+                            <div id="boot-codename-display" class="text-3xl md:text-5xl font-orbitron text-white tracking-tighter">GUEST</div>
+                            <div class="h-1 w-full bg-blue-900/50 mt-4 overflow-hidden">
+                                <div id="boot-progress" class="h-full bg-[var(--neon-blue)] w-0 transition-all duration-300"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- //end -->
 
             <!-- //added on 18th feb start -->
              <div id="view-htp" class="hidden absolute inset-0 z-40 bg-black/90 flex flex-col items-center justify-center fade-in backdrop-blur-sm">
@@ -1147,6 +1261,264 @@
     <!-- //END -->
 
     <script>
+
+    //added by t start
+ /* ================= VANILLA LIGHTNING SHADER PORT ================= */
+class BootLightning {
+    constructor(containerId, options = {}) {
+        this.container = document.getElementById(containerId);
+        if (!this.container) return;
+        this.canvas = document.createElement('canvas');
+        this.canvas.style.width = '100%';
+        this.canvas.style.height = '100%';
+        this.container.appendChild(this.canvas);
+        
+        this.gl = this.canvas.getContext('webgl');
+        if (!this.gl) return;
+
+        this.params = {
+            hue: options.hue || 260,
+            xOffset: options.xOffset || 0,
+            speed: options.speed || 1,
+            intensity: options.intensity || 1,
+            size: options.size || 1
+        };
+
+        this.init();
+    }
+
+    init() {
+        const vs = `attribute vec2 aPosition; void main() { gl_Position = vec4(aPosition, 0.0, 1.0); }`;
+        const fs = `
+            precision highp float;
+            uniform vec2 iResolution; uniform float iTime;
+            uniform float uHue; uniform float uXOffset;
+            uniform float uSpeed; uniform float uIntensity; uniform float uSize;
+            #define OCTAVE_COUNT 10
+
+            vec3 hsv2rgb(vec3 c) {
+                vec3 rgb = clamp(abs(mod(c.x * 6.0 + vec3(0.0,4.0,2.0), 6.0) - 3.0) - 1.0, 0.0, 1.0);
+                return c.z * mix(vec3(1.0), rgb, c.y);
+            }
+            float hash11(float p) { p = fract(p * .1031); p *= p + 33.33; p *= p + p; return fract(p); }
+            float hash12(vec2 p) { vec3 p3 = fract(vec3(p.xyx) * .1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
+            mat2 rotate2d(float theta) { float c = cos(theta); float s = sin(theta); return mat2(c, -s, s, c); }
+            float noise(vec2 p) {
+                vec2 ip = floor(p); vec2 fp = fract(p);
+                float a = hash12(ip); float b = hash12(ip + vec2(1.0, 0.0));
+                float c = hash12(ip + vec2(0.0, 1.0)); float d = hash12(ip + vec2(1.0, 1.0));
+                vec2 t = smoothstep(0.0, 1.0, fp);
+                return mix(mix(a, b, t.x), mix(c, d, t.x), t.y);
+            }
+            float fbm(vec2 p) {
+                float value = 0.0; float amplitude = 0.5;
+                for (int i = 0; i < OCTAVE_COUNT; ++i) {
+                    value += amplitude * noise(p); p *= rotate2d(0.45); p *= 2.0; amplitude *= 0.5;
+                }
+                return value;
+            }
+            void main() {
+                vec2 uv = gl_FragCoord.xy / iResolution.xy;
+                uv = 2.0 * uv - 1.0;
+                uv.x *= iResolution.x / iResolution.y;
+                uv.x += uXOffset;
+                uv += 2.0 * fbm(uv * uSize + 0.8 * iTime * uSpeed) - 1.0;
+                float dist = abs(uv.x);
+                vec3 baseColor = hsv2rgb(vec3(uHue / 360.0, 0.8, 1.0));
+                vec3 col = baseColor * pow(mix(0.0, 0.15, hash11(iTime * uSpeed)) / dist, 1.0) * uIntensity;
+                gl_FragColor = vec4(col, 1.0);
+            }
+        `;
+
+        const program = this.createProgram(vs, fs);
+        this.gl.useProgram(program);
+
+        const vertices = new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]);
+        const buffer = this.gl.createBuffer();
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, vertices, this.gl.STATIC_DRAW);
+
+        const pos = this.gl.getAttribLocation(program, 'aPosition');
+        this.gl.enableVertexAttribArray(pos);
+        this.gl.vertexAttribPointer(pos, 2, this.gl.FLOAT, false, 0, 0);
+
+        this.locs = {
+            res: this.gl.getUniformLocation(program, 'iResolution'),
+            time: this.gl.getUniformLocation(program, 'iTime'),
+            hue: this.gl.getUniformLocation(program, 'uHue'),
+            off: this.gl.getUniformLocation(program, 'uXOffset'),
+            spd: this.gl.getUniformLocation(program, 'uSpeed'),
+            int: this.gl.getUniformLocation(program, 'uIntensity'),
+            siz: this.gl.getUniformLocation(program, 'uSize')
+        };
+
+        this.startTime = performance.now();
+        this.animate();
+    }
+
+    createProgram(vsSource, fsSource) {
+        const loadShader = (gl, type, source) => {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            return shader;
+        };
+        const program = this.gl.createProgram();
+        this.gl.attachShader(program, loadShader(this.gl, this.gl.VERTEX_SHADER, vsSource));
+        this.gl.attachShader(program, loadShader(this.gl, this.gl.FRAGMENT_SHADER, fsSource));
+        this.gl.linkProgram(program);
+        return program;
+    }
+
+    animate() {
+        if (!this.gl) return;
+        this.canvas.width = this.canvas.clientWidth;
+        this.canvas.height = this.canvas.clientHeight;
+        this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+        
+        this.gl.uniform2f(this.locs.res, this.canvas.width, this.canvas.height);
+        this.gl.uniform1f(this.locs.time, (performance.now() - this.startTime) / 1000);
+        this.gl.uniform1f(this.locs.hue, this.params.hue);
+        this.gl.uniform1f(this.locs.off, this.params.xOffset);
+        this.gl.uniform1f(this.locs.spd, this.params.speed);
+        this.gl.uniform1f(this.locs.int, this.params.intensity);
+        this.gl.uniform1f(this.locs.siz, this.params.size);
+
+        this.gl.drawArrays(this.gl.TRIANGLES, 0, 6);
+        this.raf = requestAnimationFrame(() => this.animate());
+    }
+
+    stop() { cancelAnimationFrame(this.raf); }
+}
+
+const bootSequence = {
+    logs: [
+        ">> INITIALIZING CHI-EAC V2.1...",
+        ">> KERNEL LOADED: CONSTITUTIONAL_SHIELD_BETA",
+        ">> HANDSHAKING WITH CHICAGO_ADVOCACY_UPLINK...",
+        ">> [OK] ENCRYPTION_TUNNEL: AES-512-GCM ACTIVE",
+        ">> SCANNIG LOCAL RIGHTS_DATABASE_V.04...",
+        ">> WARNING: DUE PROCESS BYPASS ATTEMPT DETECTED",
+        ">> COUNTER-MEASURES ACTIVE // TTR_ARCHITECT_MODE",
+        ">> SYNCING BIOMETRIC OPERATOR DATA...",
+        ">> UPLINK SECURE. WELCOME, OPERATOR."
+    ],
+
+    speak: (text) => {
+        if (audio.muted) return;
+        const msg = new SpeechSynthesisUtterance(text);
+        const voices = window.speechSynthesis.getVoices();
+        // Priority: Google/Natural English voices
+        msg.voice = voices.find(v => (v.name.includes('Google') || v.name.includes('Natural')) && v.lang.startsWith('en')) || voices[0];
+        msg.pitch = 0.75; // Deeper AI voice
+        msg.rate = 0.9;
+        window.speechSynthesis.speak(msg);
+    },
+
+    playBootSound: () => {
+        // High-end Power-up Hum (Sawtooth sweep)
+        const osc = new Tone.Oscillator(60, "sawtooth").toDestination();
+        const filter = new Tone.Filter(100, "lowpass").toDestination();
+        osc.connect(filter);
+        osc.start().frequency.rampTo(280, 5); // Slower ramp
+        filter.frequency.rampTo(1200, 5);
+        setTimeout(() => { 
+            osc.stop(); 
+            // Final Success Chord
+            const synth = new Tone.PolySynth().toDestination();
+            synth.triggerAttackRelease(["C4", "E4", "G4", "B4"], "1n");
+        }, 5000);
+    },
+
+    start: (codename) => {
+        game.hideAll();
+        const view = document.getElementById('view-boot');
+        view.classList.remove('hidden');
+        view.classList.add('flex');
+        
+        // Dynamic HTML structure to prevent overlap
+        view.innerHTML = `
+            <div id="boot-lightning-bg" class="absolute inset-0 z-0 opacity-60"></div>
+            <div id="boot-logs-sidebar" class="hidden md:flex"></div>
+            <div class="flex-grow flex items-center justify-center relative z-[80]">
+                <div id="boot-status-box" class="opacity-0 scale-95 transition-all duration-1000">
+                    <div class="text-center">
+                        <div class="text-[var(--neon-blue)] text-[9px] tracking-[0.6em] mb-4 font-orbitron opacity-70">TERMINAL AUTHORIZATION</div>
+                        <div id="boot-name" class="text-3xl md:text-6xl font-orbitron text-white tracking-tighter mb-2 min-h-[1.2em]"></div>
+                        <div class="progress-rail"><div id="boot-progress"></div></div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const logSidebar = document.getElementById('boot-logs-sidebar');
+        const statusBox = document.getElementById('boot-status-box');
+        const nameEl = document.getElementById('boot-name');
+        const progress = document.getElementById('boot-progress');
+
+        // Start Lightning with your Hue 260
+        const lightning = new BootLightning('boot-lightning-bg', { hue: 260, speed: 1.2, intensity: 1.5 });
+        bootSequence.playBootSound();
+
+        let i = 0;
+        const addLog = () => {
+            if (i < bootSequence.logs.length) {
+                if (logSidebar) {
+                    const line = document.createElement('div');
+                    // We use flexbox here to keep the timestamp and text aligned
+                    line.className = "flex text-[9px] font-mono mb-1.5 border-l-2 border-transparent hover:border-[var(--neon-blue)] hover:bg-blue-900/10 px-2 transition-all";
+                    
+                    // Generate dynamic time: HH:MM:SS
+                    const now = new Date();
+                    const timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+                    const dateStr = now.toLocaleDateString('en-GB').replace(/\//g, '-');
+
+                    line.innerHTML = `
+                        <span class="opacity-30 text-[var(--neon-blue)] shrink-0 mr-3">[${timeStr}]</span>
+                        <span class="text-[var(--neon-blue)] opacity-80 uppercase tracking-wider">${bootSequence.logs[i]}</span>
+                    `;
+                    
+                    logSidebar.appendChild(line);
+                }
+                
+                // Play tiny tick sound
+                const tick = new Tone.MembraneSynth({ volume: -25 }).toDestination();
+                tick.triggerAttackRelease("C6", "64n");
+
+                i++;
+                progress.style.width = `${(i / bootSequence.logs.length) * 100}%`;
+
+                // DELIBERATE PACING
+                if (i === 1) statusBox.classList.add('opacity-100', 'scale-100');
+                if (i === 4) {
+                    statusBox.classList.add('glitching'); // Trigger the Spider-Verse CSS Glitch
+                    game.scrambleText(nameEl, codename || "GUEST");
+                }
+
+                // Slower timing for "Big Game" feel
+                let delay = 500 + Math.random() * 300;
+                if (i === 5) delay = 1500; // The "Biometric Scan" long pause
+
+                setTimeout(addLog, delay);
+            } else {
+                // ALL LOGS COMPLETE
+                statusBox.classList.remove('glitching');
+                setTimeout(() => {
+                    bootSequence.speak(`Welcome, Operator ${codename || "GUEST"}. Authorization complete.`);
+                    setTimeout(() => {
+                        uiEffects.fadeTransition(() => {
+                            lightning.stop();
+                            game.showHowToPlay();
+                        });
+                    }, 2500);
+                }, 500);
+            }
+        };
+        addLog();
+    }
+};
+
+    //end
 
     // --- UTILS ---
     const getImg = (text) => `https://placehold.co/800x400/111827/00f3ff.png?text=${text}&font=roboto`;
@@ -2837,10 +3209,19 @@ const game = {
         // game.showModules();
         //added on 18th feb start
         // --- CHANGED: Go to Briefing first, not modules ---
-        game.showHowToPlay();
+        // game.showHowToPlay();
 
         //end
-        audio.init();
+        // audio.init();
+
+        // 2. TRIGGER THE BOOT SEQUENCE instead of game.showHowToPlay()
+        // bootSequence.start(game.state.name);
+
+        // Start Audio Context (Crucial for Tone.js)
+        Tone.start().then(() => {
+            audio.init();
+            bootSequence.start(game.state.name);
+        });
         // --- NEW: Start Radio and slide up UI ---
         // if (!audio.muted) {
         //     radioEngine.play();
@@ -3660,7 +4041,7 @@ const game = {
     },
 
     hideAll: () => {
-        ['view-start', 'view-htp', 'view-modules', 'view-levels', 'view-game', 'view-summary', 'view-feedback', 'view-dashboard'].forEach(id => {
+        ['view-start', 'view-boot', 'view-htp', 'view-modules', 'view-levels', 'view-game', 'view-summary', 'view-feedback', 'view-dashboard'].forEach(id => {
             document.getElementById(id).classList.add('hidden');
             document.getElementById(id).classList.remove('flex');
         });
