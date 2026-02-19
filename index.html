@@ -574,6 +574,11 @@
         }
 
 
+        #view-start a:hover {
+            text-shadow: 0 0 8px var(--neon-blue);
+        }
+
+
         /* //end */
 
     </style>
@@ -664,6 +669,20 @@
                     <input type="text" id="input-name" placeholder="ENTER CODENAME" class="bg-gray-900 border border-gray-600 p-3 text-white font-mono text-center focus:border-neon-blue outline-none rounded" maxlength="12">
                     <button onclick="game.init()" class="px-10 py-4 bg-blue-900/30 border border-blue-500 text-blue-100 font-orbitron hover:bg-blue-500 hover:text-white transition-all tracking-widest" data-text="init">INITIALIZE</button>
                 </div>
+
+                <!-- //added by tushar start -->
+                <div class="absolute bottom-4 w-full text-center px-4">
+                    <div class="inline-block border-t border-white/10 pt-2">
+                        <p class="font-mono text-[9px] tracking-[0.2em] text-gray-500">
+                            SYSTEM ARCHITECT: <span class="text-[var(--neon-blue)]">TTR</span>
+                        </p>
+                        <p class="font-mono text-[8px] tracking-widest text-gray-600 mt-1 uppercase">
+                            Developed for <a href="https://chieac.org/" target="_blank" class="hover:text-white transition-colors underline decoration-gray-700">Chicago Education Advocacy Cooperative</a>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- //end -->
             </div>
 
             <!-- //added on 18th feb start -->
@@ -1054,6 +1073,23 @@
                                 </a>
                             </div>
                         </div>
+
+                        <!-- //ADDED BY T START -->
+                        <div class="col-span-1 sm:col-span-2 p-3 border border-[var(--neon-blue)]/30 bg-blue-900/10 rounded flex items-center justify-between group">
+                                    <div class="flex items-center gap-3">
+                                        <div class="text-xl">👨‍💻</div>
+                                        <div>
+                                            <div class="text-[9px] font-mono text-[var(--neon-blue)] animate-pulse">CORE DEVELOPER // ARCHITECT</div>
+                                            <div class="text-sm font-bold text-white font-orbitron uppercase">Tushar Rohilla <span class="text-[var(--neon-blue)] opacity-50">[TTR]</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-[8px] font-mono text-gray-500 uppercase">Authorized For</div>
+                                        <a href="https://chieac.org/" target="_blank" class="text-[10px] font-bold text-white hover:text-[var(--neon-blue)] transition-colors">ChiEAC.org</a>
+                                    </div>
+                        </div>
+
+                        <!-- //END -->
 
                     </div>
                 </div>
