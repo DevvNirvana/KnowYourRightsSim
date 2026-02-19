@@ -2693,14 +2693,14 @@ const radioEngine = {
             wrapper.classList.add('playing'); // Start the ring pulse
             // PAUSE ICON: Remove nudge, set text
             btn.classList.remove('play-icon-nudge');
-            btn.innerText = '⏸&#xFE0E;';
+            btn.innerText = '\u23F8\uFE0E';
         } else {
             eq.classList.add('eq-paused', 'opacity-40');
             eq.classList.remove('opacity-100');
             wrapper.classList.remove('playing'); // Stop the ring pulse
             // PLAY ICON: Add nudge for optical centering, set text
             btn.classList.add('play-icon-nudge');
-            btn.innerText = '▶&#xFE0E;';
+            btn.innerText = '\u23F8\uFE0E';
         }
     }
 };
