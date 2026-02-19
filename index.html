@@ -485,6 +485,13 @@
             </button>
 
             <!-- /end -->
+
+            <!-- //ADDED ON 18 FEB START -->
+             <button id="btn-install" class="hidden md:hidden border border-[var(--neon-yellow)] text-[var(--neon-yellow)] px-2 py-1 rounded transition-colors text-xs font-bold hover:bg-yellow-900/30 animate-pulse shadow-[0_0_10px_rgba(252,238,10,0.2)]" data-text="deploy">
+                [⬇] INSTALL APP
+            </button>
+
+            <!-- //END -->
             <div class="flex items-center gap-6 font-mono text-sm mobile-hud">
                 <div class="text-right">
                     <div class="text-gray-500 text-[10px]" data-text="operator">OPERATOR</div>
@@ -2291,8 +2298,10 @@
             htp_rule2_desc: "Real-time encounters demand rapid response. Failing to act before the timer expires triggers a panic state and penalty.",
             htp_rule3_title: "TACTICS",
             htp_rule3_desc: "Every choice is recorded. Assert your rights and gather evidence to build an ironclad Action Log for the final review.",
-            htp_btn: ">> ACKNOWLEDGE & PROCEED"
+            htp_btn: ">> ACKNOWLEDGE & PROCEED",
             //end
+
+            deploy: "[⬇] INSTALL APP",
         },
         es: {
             title: "KNOW YOUR RIGHTS", subtitle: "SIMULADOR LEGAL TÁCTICO",
@@ -2316,8 +2325,10 @@
             htp_rule2_desc: "Los encuentros exigen respuesta rápida. No actuar antes de que expire el tiempo provoca un estado de pánico y penalización.",
             htp_rule3_title: "TÁCTICAS",
             htp_rule3_desc: "Cada elección se registra. Afirma tus derechos y reúne evidencia para construir un Registro de Acción blindado.",
-            htp_btn: ">> CONFIRMAR Y PROCEDER"
+            htp_btn: ">> CONFIRMAR Y PROCEDER",
             //end
+
+            deploy: "[⬇] INSTALAR APP",
 
         
         }
@@ -3877,6 +3888,54 @@ class TiltedCard {
 
 //end
 </script>
+
+<!-- //added on 18 feb start -->
+ <script>
+    /* ================= PWA INSTALL MANAGER ================= */
+let deferredPrompt;
+const installBtn = document.getElementById('btn-install');
+
+// 1. Catch the browser's install event
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent the default mini-infobar from appearing
+    e.preventDefault();
+    // Stash the event so it can be triggered later
+    deferredPrompt = e;
+    // Show our custom Cyberpunk button
+    installBtn.classList.remove('hidden');
+});
+
+// 2. Handle the click on our custom button
+installBtn.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    
+    audio.play('click'); // Play your UI sound
+    
+    // Show the actual native install prompt
+    deferredPrompt.prompt();
+    
+    // Wait for the user to respond to the prompt
+    const { outcome } = await deferredPrompt.userChoice;
+    
+    // If they installed it, or cancelled, we hide the button
+    if (outcome === 'accepted') {
+        installBtn.classList.add('hidden');
+    }
+    
+    // Clear the saved prompt
+    deferredPrompt = null;
+});
+
+// 3. Listen for successful installation (from any source)
+window.addEventListener('appinstalled', () => {
+    // Hide the button permanently once installed
+    installBtn.classList.add('hidden');
+    deferredPrompt = null;
+    console.log('System successfully deployed to local host.');
+});
+ </script>
+
+<!-- //end -->
 
 <!-- //added on 18th feb start -->
  <script>
