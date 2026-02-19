@@ -574,18 +574,6 @@
         }
 
 
-        /* /* Added by t start */
-        #radio-mini-player {
-            /* Respects iOS bottom navigation bar */
-            bottom: calc(0.5rem + env(safe-area-inset-bottom)) !important;
-        }
-
-        /* Ensure the scene transition overlay is always the absolute top layer */
-        #scene-transition {
-            z-index: 9999;
-        }
-
-
         /* //end */
 
     </style>
@@ -679,7 +667,7 @@
             </div>
 
             <!-- //added on 18th feb start -->
-             <div id="view-htp" class="hidden absolute inset-0 z-50 bg-black/90 flex flex-col items-center justify-center fade-in backdrop-blur-sm">
+             <div id="view-htp" class="hidden absolute inset-0 z-40 bg-black/90 flex flex-col items-center justify-center fade-in backdrop-blur-sm">
                 
                 <div class="perspective-container max-w-4xl w-full h-full p-3 md:p-8">
                     
@@ -697,7 +685,7 @@
                                 </div> -->
                             </div>
 
-                            <div class="p-3 md:p-6 flex-1 min-h-0 overflow-y-auto custom-scroll flex flex-col gap-4 md:gap-6 pb-28">
+                            <div class="p-3 md:p-6 flex-1 min-h-0 overflow-y-auto custom-scroll flex flex-col gap-4 md:gap-6">
                                 
                                 <p class="font-mono text-xs md:text-sm text-gray-300 leading-relaxed border-l-2 border-[var(--neon-blue)] pl-3 bg-blue-900/10 py-2 md:py-3 shrink-0" data-text="htp_intro">
                                     You are entering a high-stakes legal combat zone. Your objective is to survive encounters with law enforcement and corporate entities by making constitutionally sound decisions.
@@ -737,7 +725,7 @@
                             </div>
 
                             <div class="p-3 md:p-6 border-t border-gray-800 shrink-0 bg-black/40 rounded-b-lg">
-                                <button onclick="audio.play('click'); uiEffects.fadeTransition(() => game.showModules())" class="w-full flex items-center justify-center px-4 py-3 md:py-4 font-orbitron font-bold text-[var(--neon-blue)] transition-all duration-300 bg-[var(--neon-blue)]/5 border border-[var(--neon-blue)] hover:bg-[var(--neon-blue)] hover:text-black hover:shadow-[0_0_20px_var(--neon-blue)] text-sm md:text-lg tracking-widest" data-text="htp_btn" style="transform: translateZ(20px);">
+                                <button onclick="audio.play('click'); uiEffects.revealRadio(); uiEffects.fadeTransition(() => game.showModules())" class="w-full flex items-center justify-center px-4 py-3 md:py-4 font-orbitron font-bold text-[var(--neon-blue)] transition-all duration-300 bg-[var(--neon-blue)]/5 border border-[var(--neon-blue)] hover:bg-[var(--neon-blue)] hover:text-black hover:shadow-[0_0_20px_var(--neon-blue)] text-sm md:text-lg tracking-widest" data-text="htp_btn" style="transform: translateZ(20px);">
                                     >> ACKNOWLEDGE & PROCEED
                                 </button>
                             </div>
@@ -1085,7 +1073,7 @@
     </div>
 
     <!-- //ADDED ON 19TH FEB START RADIO UPDATE START -->
-     <div id="radio-mini-player" class="fixed z-30 bottom-0.5 md:bottom-4 left-0 right-0 mx-auto md:left-auto md:right-4 w-[95%] md:w-72 p-1.5 md:p-2.5 rounded-xl md:rounded-2xl border border-white/20 bg-gray-950/60 backdrop-blur-lg flex items-center justify-between gap-3 transition-all duration-700 translate-y-[150%] opacity-0" style="--radio-color: #00f3ff; box-shadow: 0 0 25px var(--radio-glow, rgba(0,243,255,0.2)), inset 0 1px 1px rgba(255,255,255,0.2);">
+     <div id="radio-mini-player" class="hidden fixed z-30 bottom-0.5 md:bottom-4 left-0 right-0 mx-auto md:left-auto md:right-4 w-[95%] md:w-72 p-1.5 md:p-2.5 rounded-xl md:rounded-2xl border border-white/20 bg-gray-950/60 backdrop-blur-lg flex items-center justify-between gap-3 transition-all duration-700 translate-y-[150%] opacity-0" style="--radio-color: #00f3ff; box-shadow: 0 0 25px var(--radio-glow, rgba(0,243,255,0.2)), inset 0 1px 1px rgba(255,255,255,0.2);">
         
         <div class="flex items-center gap-3 min-w-0 pl-1 md:pl-0">
             <div id="radio-eq" class="flex items-end gap-[3px] h-5 md:h-6 w-6 md:w-8 shrink-0 opacity-40 transition-opacity duration-300">
@@ -2817,10 +2805,10 @@ const game = {
         //end
         audio.init();
         // --- NEW: Start Radio and slide up UI ---
-        if (!audio.muted) {
-            radioEngine.play();
-        }
-        document.getElementById('radio-mini-player').classList.remove('translate-y-[150%]', 'opacity-0');
+        // if (!audio.muted) {
+        //     radioEngine.play();
+        // }
+        // document.getElementById('radio-mini-player').classList.remove('translate-y-[150%]', 'opacity-0');
         // ----------------------------------------
         game.load();
     },
@@ -4474,6 +4462,20 @@ const uiEffects = {
                 }, 500);
             }, 100);
         }, 500);
+    },
+
+    revealRadio: () => {
+        const player = document.getElementById('radio-mini-player');
+        // 1. Unhide the element
+        player.classList.remove('hidden');
+        
+        // 2. Small timeout to allow the 'hidden' removal to register before animating
+        setTimeout(() => {
+            player.classList.remove('translate-y-[150%]', 'opacity-0');
+            if (!audio.muted) {
+                radioEngine.play();
+            }
+        }, 50);
     }
 };
 
