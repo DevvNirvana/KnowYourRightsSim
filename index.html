@@ -462,6 +462,109 @@
 
         /* //end */
 
+        /* //ADDED by t :start */
+        /* --- RADIO EQUALIZER ANIMATIONS --- */
+        .eq-bar { 
+            width: 4px; 
+            border-radius: 1px;
+            transform-origin: bottom; 
+            will-change: transform; 
+            background-color: var(--radio-color, #00f3ff); /* Dynamic Color */
+            box-shadow: 0 0 8px var(--radio-color, #00f3ff);
+        }
+        /* Uses scaleY to be highly performant for mobile */
+        @keyframes eq1 { 0% { transform: scaleY(0.3); } 100% { transform: scaleY(1); } }
+        @keyframes eq2 { 0% { transform: scaleY(0.6); } 100% { transform: scaleY(0.9); } }
+        @keyframes eq3 { 0% { transform: scaleY(0.2); } 100% { transform: scaleY(0.8); } }
+        
+        /* Class to pause the EQ when radio is paused */
+        .eq-paused .eq-bar {
+            animation-play-state: paused;
+            transform: scaleY(0.2) !important;
+        }
+
+        /* Animated Laser Text */
+        .rave-text {
+            background: linear-gradient(90deg, #ffffff, var(--radio-color, #00f3ff), #ffffff);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: raveShine 3s linear infinite;
+        }
+        @keyframes raveShine {
+            to { background-position: 200% center; }
+        }
+
+
+        /* --- PLAY BUTTON GLOWING RING --- */
+        .play-ring {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid var(--radio-color);
+            box-shadow: 0 0 10px var(--radio-glow), inset 0 0 5px var(--radio-glow);
+            transition: all 0.3s ease;
+        }
+        
+        /* Subtle pulse animation only when playing */
+        .playing .play-ring {
+            animation: ringPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes ringPulse {
+            0% { box-shadow: 0 0 5px var(--radio-glow), inset 0 0 2px var(--radio-glow); transform: scale(1); }
+            50% { box-shadow: 0 0 15px var(--radio-glow), inset 0 0 8px var(--radio-glow); transform: scale(1.05); }
+            100% { box-shadow: 0 0 5px var(--radio-glow), inset 0 0 2px var(--radio-glow); transform: scale(1); }
+        }
+
+        /* Optical fix: Nudge the play triangle right to look centered */
+        .play-icon-nudge {
+            padding-left: 2px;
+        }
+
+        /* --- CYBERPUNK VOLUME SLIDER --- */
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 0;
+            overflow: hidden;
+            transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Show slider when parent is hovered */
+        #radio-mini-player:hover .volume-container {
+            width: 80px;
+            margin-left: 8px;
+        }
+
+        input[type="range"].radio-vol {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            outline: none;
+        }
+
+        input[type="range"].radio-vol::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            background: var(--radio-color);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--radio-color);
+        }
+
+
+        /* //end */
+
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-2 relative z-10">
@@ -473,6 +576,8 @@
 
     <div class="scanlines"></div>
 
+    <div id="scene-transition" class="fixed inset-0 z-[999] bg-black opacity-0 pointer-events-none transition-opacity duration-500"></div>
+
     <div id="app-container" class="w-full max-w-5xl h-[90vh] flex flex-col relative z-20">
         
         <!-- <header class="glass-panel p-4 mb-4 rounded-t-lg flex justify-between items-center corner-accent"> -->
@@ -481,7 +586,7 @@
                 <div class="w-10 h-10 bg-blue-900/20 border border-blue-500 rounded flex items-center justify-center text-xl">⚖️</div>
                 <div>
                     <h1 class="font-orbitron text-2xl text-white tracking-widest leading-none">KYR_SIM</h1>
-                    <div class="font-mono text-[10px] text-neon-blue">SYSTEM ONLINE // V2.0</div>
+                    <div class="font-mono text-[10px] text-neon-blue">SYSTEM ONLINE // V2.1</div>
                 </div>
             </div>
             <!-- Added on 1/12/26 start -->
@@ -609,7 +714,7 @@
                             </div>
 
                             <div class="p-3 md:p-6 border-t border-gray-800 shrink-0 bg-black/40 rounded-b-lg">
-                                <button onclick="audio.play('click'); game.showModules()" class="w-full flex items-center justify-center px-4 py-3 md:py-4 font-orbitron font-bold text-[var(--neon-blue)] transition-all duration-300 bg-[var(--neon-blue)]/5 border border-[var(--neon-blue)] hover:bg-[var(--neon-blue)] hover:text-black hover:shadow-[0_0_20px_var(--neon-blue)] text-sm md:text-lg tracking-widest" data-text="htp_btn" style="transform: translateZ(20px);">
+                                <button onclick="audio.play('click'); uiEffects.fadeTransition(() => game.showModules())" class="w-full flex items-center justify-center px-4 py-3 md:py-4 font-orbitron font-bold text-[var(--neon-blue)] transition-all duration-300 bg-[var(--neon-blue)]/5 border border-[var(--neon-blue)] hover:bg-[var(--neon-blue)] hover:text-black hover:shadow-[0_0_20px_var(--neon-blue)] text-sm md:text-lg tracking-widest" data-text="htp_btn" style="transform: translateZ(20px);">
                                     >> ACKNOWLEDGE & PROCEED
                                 </button>
                             </div>
@@ -624,7 +729,7 @@
             <div id="view-modules" class="hidden absolute inset-0 p-4 md:p-8 flex flex-col">
                 <div class="flex justify-between items-center mb-6 border-b border-gray-800 pb-2">
                     <h2 class="font-orbitron text-3xl text-white" data-text="select_module">SELECT MODULE</h2>
-                    <button onclick="game.showDashboard()" class="font-mono text-sm text-neon-blue hover:text-white border border-neon-blue px-3 py-1 rounded" data-text="dashboard">LEADERBOARD</button>
+                    <button onclick="game.showDashboard()" class="font-mono text-sm text-neon-blue hover:text-white border border-neon-blue px-3 py-1 rounded" data-text="dashboard">DASHBOARD</button>
                 </div>
                 <div id="modules-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6 overflow-y-auto custom-scroll p-2">
                 </div>
@@ -956,6 +1061,44 @@
         </div>
     </div>
 
+    <!-- //ADDED ON 19TH FEB START RADIO UPDATE START -->
+     <div id="radio-mini-player" class="fixed z-30 bottom-0.5 md:bottom-4 left-0 right-0 mx-auto md:left-auto md:right-4 w-[95%] md:w-72 p-1.5 md:p-2.5 rounded-xl md:rounded-2xl border border-white/20 bg-gray-950/60 backdrop-blur-lg flex items-center justify-between gap-3 transition-all duration-700 translate-y-[150%] opacity-0" style="--radio-color: #00f3ff; box-shadow: 0 0 25px var(--radio-glow, rgba(0,243,255,0.2)), inset 0 1px 1px rgba(255,255,255,0.2);">
+        
+        <div class="flex items-center gap-3 min-w-0 pl-1 md:pl-0">
+            <div id="radio-eq" class="flex items-end gap-[3px] h-5 md:h-6 w-6 md:w-8 shrink-0 opacity-40 transition-opacity duration-300">
+                <div class="eq-bar h-full animate-[eq1_0.6s_ease-in-out_infinite_alternate]"></div>
+                <div class="eq-bar h-full animate-[eq2_0.4s_ease-in-out_infinite_alternate]"></div>
+                <div class="eq-bar h-full animate-[eq3_0.7s_ease-in-out_infinite_alternate]"></div>
+                <div class="eq-bar h-full animate-[eq2_0.5s_ease-in-out_infinite_alternate]"></div>
+            </div>
+            
+            <div class="flex flex-col justify-center cursor-default min-w-0">
+                <div class="text-[7px] md:text-[8px] font-mono animate-pulse tracking-widest" style="color: var(--radio-color)">LIVE AUDIO FEED</div>
+                <div id="radio-station-name" class="text-[10px] md:text-xs font-bold font-orbitron truncate mt-0.5 rave-text drop-shadow-md">CHILLSYNTH // REKT</div>
+            </div>
+        </div>
+
+        <!-- //added by t start -->
+         <div class="volume-container hidden md:flex">
+                <span class="text-[10px] opacity-50">🔈</span>
+                <input type="range" class="radio-vol" min="0" max="1" step="0.05" value="0.4" oninput="radioEngine.setVolume(this.value)">
+            </div>
+
+        <!-- //end -->
+
+        <div id="radio-controls-wrapper" class="flex items-center gap-2 md:gap-1 shrink-0 pr-2 md:pr-0">
+            <button onclick="radioEngine.prevStation()" class="text-white hover:text-white/70 p-1 text-lg md:text-base transition-transform hover:scale-110 drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">⏮</button>
+            <!-- <button id="radio-btn-play" onclick="radioEngine.toggle()" class="text-neon-red hover:text-neon-red/70 p-1 text-lg md:text-base transition-transform hover:scale-110 drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">⏸</button> -->
+             <button onclick="radioEngine.toggle()" class="play-ring group transition-transform active:scale-95">
+                <span id="radio-btn-play" class="text-white group-hover:text-[var(--radio-color)] text-sm md:text-base drop-shadow-md">⏸</span>
+            </button>
+            <button onclick="radioEngine.nextStation()" class="text-white hover:text-white/70 p-1 text-lg md:text-base transition-transform hover:scale-110 drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">⏭</button>
+        </div>
+    </div>
+
+
+    <!-- //END -->
+
     <script>
 
     // --- UTILS ---
@@ -967,24 +1110,57 @@
         bgm: null,
         muted: false,
         
+        // init: async () => {
+        //     if(!audio.synth) {
+        //         await Tone.start();
+        //         audio.synth = new Tone.PolySynth(Tone.Synth).toDestination();
+        //         audio.synth.volume.value = -10;
+                
+        //         audio.bgm = new Audio("https://dl.dropboxusercontent.com/scl/fi/uz72n6eqlmke36p2xxi1i/KxH-TTR.mp3?rlkey=fsx2dlmlvgidh5s7upenk93vm&e=1&st=hr4rm7of&");
+        //         audio.bgm.loop = true;
+        //         audio.bgm.volume = 0.4;
+        //         if(!audio.muted) audio.bgm.play().catch(e => console.log("Click to play"));
+        //     }
+        // },
+
+        //added by t start
         init: async () => {
             if(!audio.synth) {
                 await Tone.start();
                 audio.synth = new Tone.PolySynth(Tone.Synth).toDestination();
                 audio.synth.volume.value = -10;
                 
-                audio.bgm = new Audio("https://dl.dropboxusercontent.com/scl/fi/uz72n6eqlmke36p2xxi1i/KxH-TTR.mp3?rlkey=fsx2dlmlvgidh5s7upenk93vm&e=1&st=hr4rm7of&");
-                audio.bgm.loop = true;
-                audio.bgm.volume = 0.4;
-                if(!audio.muted) audio.bgm.play().catch(e => console.log("Click to play"));
+                // audio.bgm = new Audio("https://dl.dropboxusercontent.com/scl/fi/uz72n6eqlmke36p2xxi1i/KxH-TTR.mp3?rlkey=fsx2dlmlvgidh5s7upenk93vm&e=1&st=hr4rm7of&");
+                
+                // // 1. Turn OFF the loop so the track actually ends
+                // audio.bgm.loop = false; 
+                // audio.bgm.volume = 0.4;
+
+                // // 2. THE HANDOFF: When BGM finishes, slide up the Radio and play!
+                // audio.bgm.addEventListener('ended', () => {
+                //     const player = document.getElementById('radio-mini-player');
+                //     player.classList.remove('translate-y-[150%]', 'opacity-0'); // Slide it up
+                    
+                //     // Only auto-play if the user didn't hit the master mute button
+                //     if(!audio.muted) {
+                //         radioEngine.play();
+                //     }
+                // });
+
+                // if(!audio.muted) audio.bgm.play().catch(e => console.log("Click to play"));
             }
         },
+
+        //end
         toggle: () => {
             audio.muted = !audio.muted;
             document.getElementById('btn-audio').innerText = audio.muted ? '🔇' : '🔊';
-            if(audio.bgm) {
-                audio.muted ? audio.bgm.pause() : audio.bgm.play();
-            }
+            // if(audio.bgm) {
+            //     audio.muted ? audio.bgm.pause() : audio.bgm.play();
+            // }
+
+            // --- NEW: Sync the radio's mute state with the global mute ---
+            radioEngine.audio.muted = audio.muted;
         },
         play: (type) => {
             if(audio.muted || !audio.synth) return;
@@ -2372,6 +2548,157 @@
         }
     };
 
+//added by t start
+/* ================= LIVE RADIO ENGINE ================= */
+const radioEngine = {
+    audio: new Audio(),
+    
+    stations: [
+        // Station 0: The Official Soundtrack (Playlist Array)
+        { 
+            id: 'ost', 
+            name: "OST // KYR_SIM", 
+            // Notice the brackets [ ] - this is now a playlist! Add more links here separated by commas.
+            url: [
+                "https://dl.dropboxusercontent.com/scl/fi/uz72n6eqlmke36p2xxi1i/KxH-TTR.mp3?rlkey=fsx2dlmlvgidh5s7upenk93vm&e=1&st=hr4rm7of&"
+                // To add more songs later, just add a comma and the next link:
+                // , "https://dl.dropboxusercontent.com/scl/fi/.../track2.mp3?raw=1"
+            ], 
+            color: "#fcee0a" 
+        },
+        // Station 1-7: Live Rekt Network Streams (Single Strings)
+        { id: 'chillsynth', name: "CHILLSYNTH", url: "https://stream.rekt.network/chillsynth.ogg", color: "#00f3ff" },
+        { id: 'nightride', name: "NIGHTRIDE FM", url: "https://stream.rekt.network/nightride.ogg", color: "#ff00ff" },
+        { id: 'darksynth', name: "DARKSYNTH", url: "https://stream.rekt.network/darksynth.ogg", color: "#ff003c" },
+        { id: 'datawave', name: "DATAWAVE", url: "https://stream.rekt.network/datawave.ogg", color: "#0aff00" },
+        { id: 'ebsm', name: "EBSM", url: "https://stream.rekt.network/ebsm.ogg", color: "#ff6600" },
+        { id: 'horrorsynth', name: "HORRORSYNTH", url: "https://stream.rekt.network/horrorsynth.ogg", color: "#9900ff" },
+        { id: 'spacesynth', name: "SPACESYNTH FM", url: "https://stream.rekt.network/spacesynth.ogg", color: "#0066ff" }
+    ],
+    currentIndex: 0,
+    currentSubIndex: 0, // <-- NEW: Tracks which song in the playlist is currently playing
+    isPlaying: false,
+    
+    init: () => {
+        radioEngine.audio.crossOrigin = "anonymous";
+        radioEngine.audio.volume = 0.4; 
+        radioEngine.audio.loop = false; // Never loop, we handle progression manually now
+        radioEngine.setSource();
+        radioEngine.applyTheme();
+
+        // --- NEW: The Auto-Advance Logic ---
+        radioEngine.audio.addEventListener('ended', () => {
+            const station = radioEngine.stations[radioEngine.currentIndex];
+            
+            // If it's a playlist AND there are more songs left...
+            if (Array.isArray(station.url) && radioEngine.currentSubIndex < station.url.length - 1) {
+                radioEngine.currentSubIndex++; // Move to next song in the OST
+                radioEngine.setSource();
+                if (radioEngine.isPlaying) radioEngine.audio.play();
+            } else {
+                // Otherwise, the playlist is done (or a live stream dropped). Go to next station!
+                radioEngine.nextStation();
+            }
+        });
+    },
+
+    // --- NEW: Helper to load correct URL whether it's an array or string ---
+    setSource: () => {
+        const station = radioEngine.stations[radioEngine.currentIndex];
+        if (Array.isArray(station.url)) {
+            radioEngine.audio.src = station.url[radioEngine.currentSubIndex];
+        } else {
+            radioEngine.audio.src = station.url;
+        }
+    },
+    
+    play: () => {
+        radioEngine.audio.play().then(() => {
+            radioEngine.isPlaying = true;
+            radioEngine.updateUI();
+        }).catch(e => console.error("Radio autoplay blocked:", e));
+    },
+    
+    toggle: () => {
+        if (radioEngine.isPlaying) {
+            radioEngine.audio.pause();
+            radioEngine.isPlaying = false;
+        } else {
+            radioEngine.play();
+        }
+        radioEngine.updateUI();
+    },
+    
+    nextStation: () => {
+        radioEngine.currentIndex = (radioEngine.currentIndex + 1) % radioEngine.stations.length;
+        radioEngine.currentSubIndex = 0; // Reset playlist index when changing stations manually
+        radioEngine.setSource();
+        radioEngine.applyTheme(); 
+        if (radioEngine.isPlaying) radioEngine.play();
+        radioEngine.updateUI();
+    },
+
+    prevStation: () => {
+        // Go back one index, or wrap around to the end if at 0
+        radioEngine.currentIndex = (radioEngine.currentIndex - 1 + radioEngine.stations.length) % radioEngine.stations.length;
+        radioEngine.currentSubIndex = 0; // Reset playlist index
+        radioEngine.setSource();
+        radioEngine.applyTheme(); 
+        if (radioEngine.isPlaying) radioEngine.play();
+        radioEngine.updateUI();
+    },
+
+    setVolume: (val) => {
+        radioEngine.audio.volume = val;
+        // Optionally update the UI to show volume percentage if you want
+    },
+
+    // --- NEW: Theme Applier ---
+    applyTheme: () => {
+        const station = radioEngine.stations[radioEngine.currentIndex];
+        const player = document.getElementById('radio-mini-player');
+        
+        // Convert hex to rgb for the glowing drop shadow
+        const hex = station.color.replace('#', '');
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        
+        // Inject dynamic CSS variables directly into the HTML
+        player.style.setProperty('--radio-color', station.color);
+        player.style.setProperty('--radio-glow', `rgba(${r}, ${g}, ${b}, 0.3)`);
+    },
+    
+    updateUI: () => {
+        document.getElementById('radio-station-name').innerText = radioEngine.stations[radioEngine.currentIndex].name;
+        
+        const eq = document.getElementById('radio-eq');
+        const btn = document.getElementById('radio-btn-play');
+        const wrapper = document.getElementById('radio-controls-wrapper'); // Grab the wrapper
+        
+        if (radioEngine.isPlaying) {
+            eq.classList.remove('eq-paused', 'opacity-40');
+            eq.classList.add('opacity-100');
+            wrapper.classList.add('playing'); // Start the ring pulse
+            // PAUSE ICON: Remove nudge, set text
+            btn.classList.remove('play-icon-nudge');
+            btn.innerText = '⏸';
+        } else {
+            eq.classList.add('eq-paused', 'opacity-40');
+            eq.classList.remove('opacity-100');
+            wrapper.classList.remove('playing'); // Stop the ring pulse
+            // PLAY ICON: Add nudge for optical centering, set text
+            btn.classList.add('play-icon-nudge');
+            btn.innerText = '▶';
+        }
+    }
+};
+
+// Initialize it immediately so it's ready for the handoff
+radioEngine.init();
+
+//end
+
 
 /* ================= GAME ENGINE ================= */
 const game = {
@@ -2466,6 +2793,12 @@ const game = {
 
         //end
         audio.init();
+        // --- NEW: Start Radio and slide up UI ---
+        if (!audio.muted) {
+            radioEngine.play();
+        }
+        document.getElementById('radio-mini-player').classList.remove('translate-y-[150%]', 'opacity-0');
+        // ----------------------------------------
         game.load();
     },
 
@@ -4093,6 +4426,34 @@ class TiltedCard {
         });
     }
 }
+
+//end
+
+//added 
+const uiEffects = {
+    fadeTransition: (callback) => {
+        const overlay = document.getElementById('scene-transition');
+        overlay.classList.remove('pointer-events-none');
+        overlay.classList.add('opacity-100');
+
+        // Wait for fade to black (500ms)
+        setTimeout(() => {
+            callback(); // Change the screen while it's black
+            
+            // Wait a tiny bit for the DOM to render the new screen
+            setTimeout(() => {
+                overlay.classList.remove('opacity-100');
+                overlay.classList.add('opacity-0');
+                
+                // Allow clicking again once fade is done
+                setTimeout(() => {
+                    overlay.classList.add('pointer-events-none');
+                }, 500);
+            }, 100);
+        }, 500);
+    }
+};
+
 
 //end
 </script>
