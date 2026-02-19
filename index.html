@@ -1268,7 +1268,7 @@
         },
         modules: [
             {
-                id: 'police', title: 'LAW ENFORCEMENT', icon: '🚨', desc: 'Traffic stops, street encounters.', art: 'art-police',
+                id: 'police', title: 'LAW ENFORCEMENT', icon: '🚨', imgIcon: "https://dl.dropboxusercontent.com/scl/fi/4x2rl9stsopdnt6hzkvcc/lawenf.png?rlkey=3r921nf9fl1uy3m7qzexh2ko3&st=23jw1d7q", desc: 'Traffic stops, street encounters.', art: 'art-police',
                 levels: [
                     {
                         id: 'traffic', title: 'Traffic Stop',
@@ -1430,7 +1430,7 @@
                 ]
             },
             {
-                id: 'home', title: 'HOME PRIVACY', icon: '🏠', desc: 'Warrants and entry.', art: 'art-home',
+                id: 'home', title: 'HOME PRIVACY', icon: '🏠', imgIcon: "https://dl.dropboxusercontent.com/scl/fi/jsectb35oitt0gl9krjoj/homp.png?rlkey=gt90ix8dplamipx6x6eyrupyv&st=kgtpcxir", desc: 'Warrants and entry.', art: 'art-home',
                 levels: [
                     {
                         id: 'knock', title: 'The Knock',
@@ -1511,7 +1511,7 @@
                 ]
             },
             {
-                id: 'civil', title: 'CIVIL RIGHTS', icon: '📹', desc: 'Recording and protest.', art: 'art-civil',
+                id: 'civil', title: 'CIVIL RIGHTS', icon: '📹', imgIcon: "https://dl.dropboxusercontent.com/scl/fi/rzojvyp9y45j8ez96hkod/recrigh.png?rlkey=i18ld5ur761lcuhye4il6s12x&st=wwal5yvs", desc: 'Recording and protest.', art: 'art-civil',
                 levels: [
                     {
                         id: 'cam', title: 'Public Recording',
@@ -1707,6 +1707,7 @@
                         id: 'work',
                         title: 'WORKPLACE',
                         icon: '💼',
+                        imgIcon: 'https://dl.dropboxusercontent.com/scl/fi/13mtcb9598mbhcs6nz95t/wrkl.png?rlkey=x1d6y3nsut8nj2e58rg93uj9p&st=lhew4t16',
                         desc: 'Wage theft, safety.',
                         art: 'art-work',
                         levels: [
@@ -2095,7 +2096,7 @@
         },
         modules: [
             {
-                id: 'police', title: 'FUERZAS DEL ORDEN', icon: '🚨', desc: 'Paradas de tráfico, encuentros.', art: 'art-police',
+                id: 'police', title: 'FUERZAS DEL ORDEN', icon: '🚨', imgIcon: "https://dl.dropboxusercontent.com/scl/fi/4x2rl9stsopdnt6hzkvcc/lawenf.png?rlkey=3r921nf9fl1uy3m7qzexh2ko3&st=23jw1d7q", desc: 'Paradas de tráfico, encuentros.', art: 'art-police',
                 levels: [
                     {
                         id: 'traffic', title: 'Parada de Tráfico',
@@ -2256,7 +2257,7 @@
                 ]
             },
             {
-                id: 'home', title: 'PRIVACIDAD HOGAR', icon: '🏠', desc: 'Órdenes y entrada.', art: 'art-home',
+                id: 'home', title: 'PRIVACIDAD HOGAR', icon: '🏠', imgIcon: "https://dl.dropboxusercontent.com/scl/fi/jsectb35oitt0gl9krjoj/homp.png?rlkey=gt90ix8dplamipx6x6eyrupyv&st=kgtpcxir", desc: 'Órdenes y entrada.', art: 'art-home',
                 levels: [
                     {
                         id: 'knock', title: 'El Golpe',
@@ -2337,7 +2338,7 @@
                 ]
             },
             {
-                id: 'civil', title: 'DERECHOS CIVILES', icon: '📹', desc: 'Grabación y protesta.', art: 'art-civil',
+                id: 'civil', title: 'DERECHOS CIVILES', icon: '📹', imgIcon: "https://dl.dropboxusercontent.com/scl/fi/rzojvyp9y45j8ez96hkod/recrigh.png?rlkey=i18ld5ur761lcuhye4il6s12x&st=wwal5yvs", desc: 'Grabación y protesta.', art: 'art-civil',
                 levels: [
                     {
                         id: 'cam', title: 'Grabación Pública',
@@ -2420,7 +2421,7 @@
                 ]
             },
             {
-                id: 'work', title: 'LUGAR DE TRABAJO', icon: '💼', desc: 'Robo de salario, seguridad.', art: 'art-work',
+                id: 'work', title: 'LUGAR DE TRABAJO', icon: '💼', imgIcon: 'https://dl.dropboxusercontent.com/scl/fi/13mtcb9598mbhcs6nz95t/wrkl.png?rlkey=x1d6y3nsut8nj2e58rg93uj9p&st=lhew4t16', desc: 'Robo de salario, seguridad.', art: 'art-work',
                 levels: [
                     {
                         id: 'wage', title: 'Fuera de Horario',
@@ -2981,13 +2982,40 @@ const game = {
 
             // 2. Inner Content
             // Must include bg-gray-900 to act as the mask
+            // wrapper.innerHTML = `
+            //     <div class="w-full h-full rounded-xl p-4 md:p-6 flex flex-row md:flex-col items-center md:items-start justify-between transition-colors relative z-10">
+                    
+            //         <div class="flex flex-row md:flex-col items-center md:items-start gap-4 md:gap-0 w-full">
+            //             <div class="w-12 h-12 md:w-16 md:h-16 mb-2 shrink-0 transition-transform group-hover:scale-110 duration-300">
+            //                 <img src="${mod.image}" class="w-full h-full object-contain filter drop-shadow-[0_0_10px_var(--radio-color)]">
+            //             </div>
+                        
+            //             <div class="flex-grow min-w-0"> <h3 class="font-orbitron text-base md:text-xl text-white group-hover:text-neon-blue transition-colors leading-none mb-1 md:mb-2 truncate">${mod.title}</h3>
+            //                 <p class="font-mono text-[10px] md:text-xs text-gray-500 leading-tight line-clamp-2 md:line-clamp-3">${mod.desc}</p>
+            //             </div>
+            //         </div>
+
+            //         <div class="text-gray-600 group-hover:text-white transition-colors text-xl md:hidden shrink-0 ml-2 mr-2">
+            //             →
+            //         </div>
+            //     </div>
+            // `;
+
+            // 2. Inner Content (Updated for Image Icons)
             wrapper.innerHTML = `
                 <div class="w-full h-full rounded-xl p-4 md:p-6 flex flex-row md:flex-col items-center md:items-start justify-between transition-colors relative z-10">
                     
                     <div class="flex flex-row md:flex-col items-center md:items-start gap-4 md:gap-0 w-full">
-                        <div class="text-3xl md:text-4xl md:mb-2 shrink-0 transition-transform group-hover:scale-110 duration-300 text-center w-12 md:w-auto">${mod.icon}</div>
                         
-                        <div class="flex-grow min-w-0"> <h3 class="font-orbitron text-base md:text-xl text-white group-hover:text-neon-blue transition-colors leading-none mb-1 md:mb-2 truncate">${mod.title}</h3>
+                        <div class="w-12 h-12 md:w-16 md:h-16 md:mb-2 shrink-0 transition-transform group-hover:scale-110 duration-300 flex items-center justify-center">
+                            ${mod.imgIcon ? 
+                                `<img src="${mod.imgIcon}" class="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">` : 
+                                `<div class="text-3xl md:text-4xl text-center">${mod.icon}</div>`
+                            }
+                        </div>
+                        
+                        <div class="flex-grow min-w-0"> 
+                            <h3 class="font-orbitron text-base md:text-xl text-white group-hover:text-neon-blue transition-colors leading-none mb-1 md:mb-2 truncate">${mod.title}</h3>
                             <p class="font-mono text-[10px] md:text-xs text-gray-500 leading-tight line-clamp-2 md:line-clamp-3">${mod.desc}</p>
                         </div>
                     </div>
