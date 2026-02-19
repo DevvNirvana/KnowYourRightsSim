@@ -396,6 +396,11 @@
             text-shadow: 0 0 20px red, 0 0 40px red;
         }
 
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
         /* --- TYPEWRITER CURSOR --- */
         .text-type__content {
             white-space: pre-wrap; /* Preserves newlines */
@@ -488,7 +493,7 @@
 
             <!-- //ADDED ON 18 FEB START -->
              <button id="btn-install" class="hidden md:hidden border border-[var(--neon-yellow)] text-[var(--neon-yellow)] px-2 py-1 rounded transition-colors text-xs font-bold hover:bg-yellow-900/30 animate-pulse shadow-[0_0_10px_rgba(252,238,10,0.2)]" data-text="deploy">
-                [⬇] INSTALL APP
+                📲 INSTALL APP
             </button>
 
             <!-- //END -->
@@ -559,9 +564,9 @@
                                     <div class="font-mono text-[9px] md:text-[10px] text-[var(--neon-blue)] tracking-widest mb-1 animate-pulse truncate">>> SECURE CONNECTION ESTABLISHED</div>
                                     <h2 class="font-orbitron text-xl md:text-3xl lg:text-4xl text-white tracking-wide md:tracking-widest drop-shadow-md leading-tight" data-text="htp_title">OPERATIONAL PROTOCOLS</h2>
                                 </div>
-                                <div class="font-mono text-[9px] md:text-[10px] text-gray-500 sm:text-right leading-tight shrink-0">
+                                <!-- <div class="font-mono text-[9px] md:text-[10px] text-gray-500 sm:text-right leading-tight shrink-0">
                                     AUTH: VALID<span class="hidden sm:inline"><br></span><span class="sm:hidden"> // </span>SYS_VER: 2.0
-                                </div>
+                                </div> -->
                             </div>
 
                             <div class="p-3 md:p-6 flex-1 min-h-0 overflow-y-auto custom-scroll flex flex-col gap-4 md:gap-6">
@@ -850,19 +855,40 @@
 
             <!-- added on 1/12/26 start -->
 
-            <div id="view-dashboard" class="hidden absolute inset-0 z-50 bg-black/95 flex flex-col p-8 fade-in">
+            <div id="view-dashboard" class="hidden absolute inset-0 z-50 bg-black/95 flex flex-col p-3 md:p-8 fade-in">
                 
-                <div class="flex justify-between items-center mb-6 border-b border-gray-800 pb-4 shrink-0">
+                <!-- <div class="flex justify-between items-center mb-6 border-b border-gray-800 pb-4 shrink-0">
                     <div class="flex items-center gap-4">
                         <h2 class="font-orbitron text-3xl text-neon-blue" data-text="dashboard_title">OPERATOR DASHBOARD</h2>
                         <span class="text-xs font-mono text-gray-500 border border-gray-700 px-2 py-1 rounded">SECURE CONNECTION</span>
                     </div>
                     <button onclick="game.showModules()" class="text-gray-400 hover:text-white text-2xl transition-transform hover:scale-110">&times;</button>
+                </div> -->
+
+                <!-- //added on 18th feb start -->
+                 <div class="flex justify-between items-start md:items-end mb-4 md:mb-6 border-b border-gray-800 pb-3 md:pb-4 shrink-0">
+                    <div class="w-full pr-4">
+                        <div class="flex items-center gap-3 md:gap-4 mb-2 md:mb-3">
+                            <h2 class="font-orbitron text-xl md:text-3xl text-[var(--neon-blue)] drop-shadow-md leading-none" data-text="dashboard_title">OPERATOR DASHBOARD</h2>
+                            <span class="hidden md:inline-block text-[10px] font-mono text-[var(--neon-green)] border border-[var(--neon-green)] bg-green-900/20 px-2 py-1 rounded animate-pulse shrink-0">SECURE CONNECTION</span>
+                        </div>
+                        <div class="font-mono text-[10px] md:text-sm text-gray-400 bg-gray-900/50 flex flex-wrap items-center gap-x-3 gap-y-1.5 px-3 py-2 rounded border border-gray-800 w-full md:w-auto md:inline-flex">
+                            <div><span data-text="operator">OPERATOR</span>: <span id="dash-player-name" class="text-white font-bold">GUEST</span></div>
+                            <div class="hidden sm:block text-gray-600">|</div>
+                            <div><span data-text="rank_label">RANK:</span> <span id="dash-player-rank" class="text-[var(--neon-yellow)] font-bold">ROOKIE</span></div>
+                            <div class="hidden sm:block text-gray-600">|</div>
+                            <div><span data-text="score">SCORE</span>: <span id="dash-player-score" class="text-white font-bold">0</span></div>
+                        </div>
+                    </div>
+                    <button onclick="game.showModules()" class="text-gray-400 hover:text-white text-3xl md:text-4xl transition-transform hover:scale-110 shrink-0 leading-none">&times;</button>
                 </div>
+
+                <!-- //end -->
                 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full overflow-hidden pb-2">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 flex-1 min-h-0 overflow-y-auto lg:overflow-hidden custom-scroll pb-2">
                     
-                    <div class="bg-gray-900/80 p-5 rounded-lg border border-gray-700 flex flex-col overflow-hidden shadow-lg relative group">
+                    <!-- <div class="bg-gray-900/80 p-5 rounded-lg border border-gray-700 flex flex-col overflow-hidden shadow-lg relative group"> -->
+                    <div class="bg-gray-900/80 p-4 md:p-5 rounded-lg border border-gray-700 flex flex-col overflow-hidden shadow-lg relative group h-64 lg:h-auto shrink-0 lg:shrink">
                         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neon-blue to-transparent opacity-50"></div>
                         
                         <h3 class="font-orbitron text-white mb-4 shrink-0 flex items-center gap-2" data-text="top_operators">
@@ -873,16 +899,16 @@
                             </div>
                     </div>
 
-                    <div class="lg:col-span-2 flex flex-col gap-6 overflow-hidden">
+                    <div class="lg:col-span-2 flex flex-col gap-4 md:gap-6 lg:overflow-hidden">
                         
-                        <div class="bg-gray-900/80 p-5 rounded-lg border border-gray-700 flex-1 flex flex-col overflow-hidden shadow-lg relative">
+                        <div class="bg-gray-900/80 p-4 md:p-5 rounded-lg border border-gray-700 flex-1 flex flex-col overflow-hidden shadow-lg relative min-h-[350px] lg:min-h-0">
                             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neon-yellow to-transparent opacity-50"></div>
                             
                             <h3 class="font-orbitron text-white mb-4 shrink-0 flex items-center gap-2" data-text="achievements_title">
                                 <span>🎖️</span> ACHIEVEMENTS
                             </h3>
                             
-                            <div id="dash-achievements" class="grid grid-cols-2 sm:grid-cols-3 gap-3 overflow-y-auto custom-scroll pr-2">
+                            <div id="dash-achievements" class="grid grid-cols-2 sm:grid-cols-3 gap-2 md:gap-3 overflow-y-auto custom-scroll p-2 -m-2">
                                 </div>
                         </div>
 
@@ -1008,14 +1034,14 @@
     /* ================= ENGLISH CONTENT PACK ================= */
     const content_en = {
         achievements: {
-            stonewall: { title: "THE SHIELD", desc: "Refused an unlawful search." },
-            castle: { title: "CASTLE DOCTRINE", desc: "Denied entry to home." },
-            camera: { title: "THE WITNESS", desc: "Recorded police activity." },
-            union: { title: "LABOR FORCE", desc: "Prevented wage theft." },
-            silent: { title: "THE FIFTH", desc: "Exercised right to remain silent." },
-            attorney: { title: "LEGAL COUNSEL", desc: "Requested an attorney." },
-            peaceful: { title: "ASSEMBLY", desc: "Protected peaceful protest rights." },
-            whistleblower: { title: "TRUTH SEEKER", desc: "Reported workplace violations." }
+            stonewall: { title: "THE SHIELD", desc: "Refused an unlawful search.", icon: "https://dl.dropboxusercontent.com/scl/fi/m6kkwtlgoqfhsijvnao5v/riotshield.png?rlkey=wx7ls0cqlc19wl1kgu51ia63f&st=osegupip" },
+            castle: { title: "CASTLE DOCTRINE", desc: "Denied entry to home.", icon: "https://dl.dropboxusercontent.com/scl/fi/09isfcw6ooyqb8x3adcez/doctrine.png?rlkey=0mkqzjsxtagh5z3b6p7kmn5oi&st=tl2mx5c1" },
+            camera: { title: "THE WITNESS", desc: "Recorded police activity.", icon: "https://dl.dropboxusercontent.com/scl/fi/59gfoibg09kb87dtq54qp/rectr.png?rlkey=tuj43ddu8zlp5x2j2zkotywjb&st=hogndk8e" },
+            union: { title: "LABOR FORCE", desc: "Prevented wage theft.", icon: "https://dl.dropboxusercontent.com/scl/fi/mp021ulhpwri744di68t4/labf.png?rlkey=8on3k1rtof5win97cvfp4hyj6&st=98f8lldn" },
+            silent: { title: "THE FIFTH", desc: "Exercised right to remain silent.", icon: "https://dl.dropboxusercontent.com/scl/fi/tinnm6n4idd1w1ocifti2/fifth.png?rlkey=7trwuyhlqpkqbr7qjaar6x4xv&st=zy2bo77i" },
+            attorney: { title: "LEGAL COUNSEL", desc: "Requested an attorney.", icon: "https://dl.dropboxusercontent.com/scl/fi/m3gomgbjfa5z438ily4cw/legalc.png?rlkey=e9839hn1osrdqn3zi52pi5f8u&st=exw7sddw" },
+            peaceful: { title: "ASSEMBLY", desc: "Protected peaceful protest rights.", icon: "https://dl.dropboxusercontent.com/scl/fi/gnk9njecf07vfcxz5yxmr/prof.png?rlkey=zpll0jgjhn79z4n8jodd1nemc&st=8idewmqb" },
+            whistleblower: { title: "TRUTH SEEKER", desc: "Reported workplace violations.", icon: "https://dl.dropboxusercontent.com/scl/fi/9fed32n9htt0m9waag3em/trues.png?rlkey=qo14ggjvwxcum4jifh4nu01t0&st=2uk4yjwl" }
         },
         modules: [
             {
@@ -1835,14 +1861,14 @@
     /* ================= SPANISH CONTENT PACK ================= */
     const content_es = {
         achievements: {
-            stonewall: { title: "EL ESCUDO", desc: "Rechazó un registro ilegal." },
-            castle: { title: "DOCTRINA CASTILLO", desc: "Negó entrada al hogar." },
-            camera: { title: "EL TESTIGO", desc: "Grabó actividad policial." },
-            union: { title: "FUERZA LABORAL", desc: "Previno robo de salario." },
-            silent: { title: "LA QUINTA", desc: "Ejerció derecho a guardar silencio." },
-            attorney: { title: "ASESORÍA LEGAL", desc: "Solicitó un abogado." },
-            peaceful: { title: "ASAMBLEA", desc: "Protegió derechos de protesta." },
-            whistleblower: { title: "BUSCADOR DE VERDAD", desc: "Reportó violaciones laborales." }
+            stonewall: { title: "EL ESCUDO", desc: "Rechazó un registro ilegal.", icon: "https://dl.dropboxusercontent.com/scl/fi/m6kkwtlgoqfhsijvnao5v/riotshield.png?rlkey=wx7ls0cqlc19wl1kgu51ia63f&st=osegupip" },
+            castle: { title: "DOCTRINA CASTILLO", desc: "Negó entrada al hogar.", icon: "https://dl.dropboxusercontent.com/scl/fi/09isfcw6ooyqb8x3adcez/doctrine.png?rlkey=0mkqzjsxtagh5z3b6p7kmn5oi&st=tl2mx5c1" },
+            camera: { title: "EL TESTIGO", desc: "Grabó actividad policial.", icon: "https://dl.dropboxusercontent.com/scl/fi/59gfoibg09kb87dtq54qp/rectr.png?rlkey=tuj43ddu8zlp5x2j2zkotywjb&st=hogndk8e" },
+            union: { title: "FUERZA LABORAL", desc: "Previno robo de salario.", icon: "https://dl.dropboxusercontent.com/scl/fi/mp021ulhpwri744di68t4/labf.png?rlkey=8on3k1rtof5win97cvfp4hyj6&st=98f8lldn" },
+            silent: { title: "LA QUINTA", desc: "Ejerció derecho a guardar silencio.", icon: "https://dl.dropboxusercontent.com/scl/fi/tinnm6n4idd1w1ocifti2/fifth.png?rlkey=7trwuyhlqpkqbr7qjaar6x4xv&st=zy2bo77i" },
+            attorney: { title: "ASESORÍA LEGAL", desc: "Solicitó un abogado.", icon: "https://dl.dropboxusercontent.com/scl/fi/m3gomgbjfa5z438ily4cw/legalc.png?rlkey=e9839hn1osrdqn3zi52pi5f8u&st=exw7sddw" },
+            peaceful: { title: "ASAMBLEA", desc: "Protegió derechos de protesta.", icon: "https://dl.dropboxusercontent.com/scl/fi/gnk9njecf07vfcxz5yxmr/prof.png?rlkey=zpll0jgjhn79z4n8jodd1nemc&st=8idewmqb" },
+            whistleblower: { title: "BUSCADOR DE VERDAD", desc: "Reportó violaciones laborales.", icon: "https://dl.dropboxusercontent.com/scl/fi/9fed32n9htt0m9waag3em/trues.png?rlkey=qo14ggjvwxcum4jifh4nu01t0&st=2uk4yjwl" }
         },
         modules: [
             {
@@ -2301,7 +2327,13 @@
             htp_btn: ">> ACKNOWLEDGE & PROCEED",
             //end
 
-            deploy: "[⬇] INSTALL APP",
+            deploy: "📲 INSTALL APP",
+
+            // --- NEW: RANKS ---
+            rank_label: "RANK:",
+            rank_rookie: "ROOKIE",
+            rank_agent: "FIELD AGENT",
+            rank_master: "MASTER OPERATOR"
         },
         es: {
             title: "KNOW YOUR RIGHTS", subtitle: "SIMULADOR LEGAL TÁCTICO",
@@ -2328,7 +2360,13 @@
             htp_btn: ">> CONFIRMAR Y PROCEDER",
             //end
 
-            deploy: "[⬇] INSTALAR APP",
+            deploy: "📲 INSTALAR APP",
+
+            // --- NEW: RANKS ---
+            rank_label: "RANGO:",
+            rank_rookie: "NOVATO",
+            rank_agent: "AGENTE DE CAMPO",
+            rank_master: "OPERADOR MAESTRO"
 
         
         }
@@ -2375,6 +2413,37 @@ const game = {
         if(typeof obj === 'string') return obj;
         return obj[game.state.lang] || obj['en'];
     },
+
+    //added on 19th feb start
+    // --- NEW: Calculate Player Rank ---
+    getRank: (score) => {
+        if (score < 500) return 'rank_rookie';
+        if (score < 1500) return 'rank_agent';
+        return 'rank_master';
+    },
+
+    // --- NEW: Hacker Decryption Effect ---
+    scrambleText: (element, targetText) => {
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*<>";
+        let iterations = 0;
+        const interval = setInterval(() => {
+            element.innerText = targetText.split('').map((char, index) => {
+                if (char === ' ') return ' ';
+                if (index < iterations) return targetText[index]; // Reveal correct letter
+                return chars[Math.floor(Math.random() * chars.length)]; // Scramble others
+            }).join('');
+            
+            iterations += 1 / 2; // Speed of decoding (lower = slower)
+            
+            if (iterations >= targetText.length) {
+                clearInterval(interval);
+                element.innerText = targetText;
+            }
+        }, 30);
+    },
+
+
+    //end
 
     init: () => {
         const nameInput = document.getElementById('input-name').value.trim().toUpperCase();
@@ -2614,6 +2683,20 @@ const game = {
         game.hideAll();
         document.getElementById('view-dashboard').classList.remove('hidden');
         document.getElementById('view-dashboard').classList.add('flex');
+
+        //added on 19th feb start
+        // --- NEW: Update Header Stats ---
+        document.getElementById('dash-player-name').innerText = game.state.name;
+        document.getElementById('dash-player-score').innerText = game.state.score;
+        
+        // Calculate and Translate Rank
+        const rankKey = game.getRank(game.state.score);
+        if (textData[game.state.lang] && textData[game.state.lang][rankKey]) {
+            document.getElementById('dash-player-rank').innerText = textData[game.state.lang][rankKey];
+        }
+        document.getElementById('dash-player-rank').setAttribute('data-text', rankKey);
+
+        //end
         
         // 1. POPULATE LEADERBOARD (Left Column)
         const list = document.getElementById('leaderboard-list');
@@ -2622,52 +2705,177 @@ const game = {
         // Sort by score (High to Low) and take top 20
         const sortedBoard = [...game.state.leaderboard].sort((a,b) => b.score - a.score).slice(0, 20);
         
+        // if (sortedBoard.length === 0) {
+        //     list.innerHTML = `<div class="text-gray-500 font-mono text-sm italic p-2">No records found. Complete a mission to rank.</div>`;
+        // } else {
+        //     sortedBoard.forEach((entry, i) => {
+        //         // Highlight the current user's score if names match
+        //         const isMe = entry.name === game.state.name;
+        //         list.innerHTML += `
+        //             <div class="flex justify-between border-b border-gray-800 pb-2 mb-2 font-mono text-sm ${isMe ? 'bg-blue-900/30 p-1 rounded' : ''}">
+        //                 <div class="flex gap-3">
+        //                     <span class="text-neon-blue w-6">${i+1}.</span>
+        //                     <span class="${isMe ? 'text-white font-bold' : 'text-gray-300'}">${entry.name}</span>
+        //                 </div>
+        //                 <span class="text-neon-yellow">${entry.score} PTS</span>
+        //             </div>`;
+        //     });
+        // }
+
+        //added on 19 feb start
         if (sortedBoard.length === 0) {
-            list.innerHTML = `<div class="text-gray-500 font-mono text-sm italic p-2">No records found. Complete a mission to rank.</div>`;
+            list.innerHTML = `<div class="text-gray-500 font-mono text-sm italic p-2">NO RECORDS FOUND. DEPLOY TO FIELD.</div>`;
         } else {
+            // sortedBoard.forEach((entry, i) => {
+            //     const isMe = entry.name === game.state.name;
+            //     const row = document.createElement('div');
+            //     row.className = `flex justify-between items-center border-b border-gray-800 pb-2 mb-2 font-mono text-sm ${isMe ? 'bg-[var(--neon-blue)]/20 p-1.5 rounded border-l-2 border-[var(--neon-blue)]' : ''}`;
+                
+            //     row.innerHTML = `
+            //         <div class="flex gap-3 overflow-hidden items-center">
+            //             <span class="text-[var(--neon-blue)] w-6 shrink-0 font-bold">${i+1}.</span>
+            //             <span class="decode-text ${isMe ? 'text-white font-bold' : 'text-gray-300'} truncate tracking-wide" data-target="${entry.name}">---</span>
+            //         </div>
+            //         <span class="decode-score text-[var(--neon-yellow)] shrink-0 font-bold tracking-widest" data-target="${entry.score} PTS">000</span>
+            //     `;
+            //     list.appendChild(row);
+            // });
+
+            //added on 19 feb start
             sortedBoard.forEach((entry, i) => {
-                // Highlight the current user's score if names match
                 const isMe = entry.name === game.state.name;
-                list.innerHTML += `
-                    <div class="flex justify-between border-b border-gray-800 pb-2 mb-2 font-mono text-sm ${isMe ? 'bg-blue-900/30 p-1 rounded' : ''}">
-                        <div class="flex gap-3">
-                            <span class="text-neon-blue w-6">${i+1}.</span>
-                            <span class="${isMe ? 'text-white font-bold' : 'text-gray-300'}">${entry.name}</span>
-                        </div>
-                        <span class="text-neon-yellow">${entry.score} PTS</span>
-                    </div>`;
+                const row = document.createElement('div');
+                
+                // FIXED: 'px-2' is applied to ALL rows so they align perfectly. 
+                // FIXED: Used standard 'bg-blue-900/50' so the highlight actually renders!
+                row.className = `flex justify-between items-center border-b border-gray-800 py-1.5 px-2 mb-1 font-mono text-sm ${isMe ? 'bg-blue-900/50 rounded border border-blue-500/30' : ''}`;
+                
+                row.innerHTML = `
+                    <div class="flex gap-3 overflow-hidden items-center">
+                        <span class="text-[var(--neon-blue)] w-6 shrink-0 font-bold">${i+1}.</span>
+                        <span class="decode-text ${isMe ? 'text-[var(--neon-blue)] font-bold drop-shadow-md' : 'text-gray-300'} truncate tracking-wide" data-target="${entry.name}">---</span>
+                    </div>
+                    <span class="decode-score text-[var(--neon-yellow)] shrink-0 font-bold tracking-widest" data-target="${entry.score} PTS">000</span>
+                `;
+                list.appendChild(row);
             });
+
+
+            //end
+
+            // Trigger the Scramble Effect with a slight delay
+            setTimeout(() => {
+                document.querySelectorAll('.decode-text, .decode-score').forEach(el => {
+                    game.scrambleText(el, el.getAttribute('data-target'));
+                });
+            }, 150);
         }
+
+        //end
 
         // 2. POPULATE TROPHIES (Top Right Panel)
         const grid = document.getElementById('dash-achievements');
         grid.innerHTML = '';
         
+        // Object.entries(game.getContent().achievements).forEach(([id, data]) => {
+        //     const unlocked = game.state.unlocked.has(id);
+            
+        //     // Logic for Locked vs Unlocked styling
+        //     const borderColor = unlocked ? 'border-neon-yellow' : 'border-gray-800';
+        //     const bgColor = unlocked ? 'bg-yellow-900/20' : 'bg-black/40';
+        //     const titleColor = unlocked ? 'text-neon-yellow' : 'text-gray-600';
+        //     const checkmark = unlocked ? '✓' : '🔒';
+        //     const description = unlocked ? data.desc : '??????';
+
+        //     const card = document.createElement('div');
+        //     // Fixed height ensures the grid stays aligned
+        //     card.className = `p-3 rounded border ${borderColor} ${bgColor} flex flex-col justify-between h-24 transition-all`;
+            
+        //     card.innerHTML = `
+        //         <div class="flex justify-between items-start">
+        //             <span class="font-bold text-xs ${titleColor} font-orbitron">${data.title}</span>
+        //             <span class="text-xs ${titleColor}">${checkmark}</span>
+        //         </div>
+        //         <div class="text-[10px] text-gray-400 font-mono leading-tight mt-1">
+        //             ${description}
+        //         </div>
+        //     `;
+        //     grid.appendChild(card);
+        // });
+
+        //added on 19 feb start
+
+        // Object.entries(game.getContent().achievements).forEach(([id, data]) => {
+        //     const unlocked = game.state.unlocked.has(id);
+            
+        //     // --- NEW: Upgraded Styling for Trophies ---
+        //     const baseClass = "p-3 rounded border flex flex-col justify-between h-24 transition-all duration-300 relative overflow-hidden z-1 hover:z-10";
+        //     const lockedClass = `${baseClass} border-gray-800 bg-black/40 opacity-60 grayscale`;
+        //     const unlockedClass = `${baseClass} border-[var(--neon-yellow)]/50 bg-yellow-900/20 cursor-default group hover:scale-[1.03] hover:border-[var(--neon-yellow)] hover:shadow-[0_0_20px_rgba(252,238,10,0.3)] hover:bg-yellow-900/40`;
+            
+        //     const titleColor = unlocked ? 'text-[var(--neon-yellow)] group-hover:text-white transition-colors' : 'text-gray-600';
+        //     const checkmark = unlocked ? '✓' : '🔒';
+        //     const description = unlocked ? data.desc : 'RESTRICTED FILE';
+
+        //     const card = document.createElement('div');
+        //     card.className = unlocked ? unlockedClass : lockedClass;
+            
+        //     // Add a subtle animated scanline over unlocked trophies
+        //     const scanline = unlocked ? `<div class="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-[var(--neon-yellow)] to-transparent opacity-0 group-hover:opacity-10 group-hover:-translate-y-full group-hover:animate-[scan_2s_ease-in-out_infinite]"></div>` : '';
+
+        //     card.innerHTML = `
+        //         ${scanline}
+        //         <div class="flex justify-between items-start relative z-10">
+        //             <span class="font-bold text-xs ${titleColor} font-orbitron tracking-wide">${data.title}</span>
+        //             <span class="text-xs ${titleColor} ml-2 shrink-0 drop-shadow-md">${checkmark}</span>
+        //         </div>
+        //         <div class="text-[10px] text-gray-400 font-mono leading-tight mt-1 relative z-10">
+        //             ${description}
+        //         </div>
+        //     `;
+        //     grid.appendChild(card);
+        // });
+
         Object.entries(game.getContent().achievements).forEach(([id, data]) => {
             const unlocked = game.state.unlocked.has(id);
             
-            // Logic for Locked vs Unlocked styling
-            const borderColor = unlocked ? 'border-neon-yellow' : 'border-gray-800';
-            const bgColor = unlocked ? 'bg-yellow-900/20' : 'bg-black/40';
-            const titleColor = unlocked ? 'text-neon-yellow' : 'text-gray-600';
-            const checkmark = unlocked ? '✓' : '🔒';
-            const description = unlocked ? data.desc : '??????';
+            const baseClass = "p-3 rounded border flex flex-col justify-between h-24 transition-all duration-300 relative overflow-hidden z-1 hover:z-10";
+            const lockedClass = `${baseClass} border-gray-800 bg-black/40 opacity-60`;
+            const unlockedClass = `${baseClass} border-[var(--neon-yellow)]/50 bg-yellow-900/20 cursor-default group hover:scale-[1.03] hover:border-[var(--neon-yellow)] hover:shadow-[0_0_20px_rgba(252,238,10,0.3)] hover:bg-yellow-900/40`;
+            
+            const titleColor = unlocked ? 'text-[var(--neon-yellow)] group-hover:text-white transition-colors' : 'text-gray-600';
+            const description = unlocked ? data.desc : 'RESTRICTED FILE';
+
+            // --- FIXED: Image Icon Logic & Gray Lock ---
+            let displayElement = '';
+            if (unlocked) {
+                // 'contrast-[1.5]' crushes the AI's fake black into pure black, removing the visible box!
+                const iconStyle = "w-8 h-8 object-contain mix-blend-screen contrast-[1.5] drop-shadow-[0_0_5px_rgba(255,255,255,0.3)] transition-transform duration-300 group-hover:scale-110";
+                displayElement = `<img src="${data.icon}" class="${iconStyle}" alt="emblem">`;
+            } else {
+                // Reverted to the simple gray lock for unearned trophies
+                displayElement = `<span class="text-xl text-gray-600 drop-shadow-md">🔒</span>`;
+            }
+            // ------------------------------------------
 
             const card = document.createElement('div');
-            // Fixed height ensures the grid stays aligned
-            card.className = `p-3 rounded border ${borderColor} ${bgColor} flex flex-col justify-between h-24 transition-all`;
+            card.className = unlocked ? unlockedClass : lockedClass;
             
+            const scanline = unlocked ? `<div class="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-[var(--neon-yellow)] to-transparent opacity-0 group-hover:opacity-10 group-hover:-translate-y-full group-hover:animate-[scan_2s_ease-in-out_infinite]"></div>` : '';
+
             card.innerHTML = `
-                <div class="flex justify-between items-start">
-                    <span class="font-bold text-xs ${titleColor} font-orbitron">${data.title}</span>
-                    <span class="text-xs ${titleColor}">${checkmark}</span>
+                ${scanline}
+                <div class="flex justify-between items-start relative z-10">
+                    <span class="font-bold text-[11px] leading-tight ${titleColor} font-orbitron tracking-wide pr-2">${data.title}</span>
+                    <div class="shrink-0 -mt-1 -mr-1 flex items-center justify-center">${displayElement}</div>
                 </div>
-                <div class="text-[10px] text-gray-400 font-mono leading-tight mt-1">
+                <div class="text-[10px] text-gray-400 font-mono leading-tight mt-1 relative z-10">
                     ${description}
                 </div>
             `;
             grid.appendChild(card);
         });
+        //end
     },
 
 
@@ -3919,7 +4127,7 @@ installBtn.addEventListener('click', async () => {
     if (isIOS) {
         // iOS Fallback: Show a stylish custom alert
         const iosMsg = game.state.lang === 'en' 
-            ? "TO DEPLOY:\nTap the Share icon at the bottom of Safari, then select 'Add to Home Screen'." 
+            ? "TO INSTALL APP:\nTap the Share icon '📤' at the bottom of Safari, then select 'Add to Home Screen'." 
             : "PARA INSTALAR:\nToca el icono Compartir en Safari, luego selecciona 'Agregar a inicio'.";
         alert(iosMsg); // You can replace this with a custom modal later if you want!
         return;
