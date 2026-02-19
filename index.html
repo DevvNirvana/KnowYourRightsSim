@@ -418,6 +418,45 @@
 
         /* //end */
 
+        /* //added on 18 feb :start */
+        /* --- 3D TILT EFFECT --- */
+        .perspective-container {
+            perspective: 1200px;
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .tilt-card {
+            transform-style: preserve-3d;
+            will-change: transform;
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1); /* Smooth spring return */
+            width: 100%;
+            max-height: 100%; /* Forces the card to never exceed screen height */
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Disables transition during mouse movement for zero-latency tracking */
+        .tilt-card.tilting {
+            transition: transform 0.1s ease-out;
+        }
+
+        .tilt-content {
+            transform: translateZ(30px); /* Pushes the content forward in 3D space */
+            /* height: 100%; */
+            display: flex;
+            flex-direction: column;
+            flex: 1;       /* Fills the available space in tilt-card */
+            min-height: 0; /* CRITICAL: This is the magic rule that allows the middle to scroll! */
+            
+        }
+
+        /* //end */
+
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-2 relative z-10">
@@ -498,6 +537,76 @@
                     <button onclick="game.init()" class="px-10 py-4 bg-blue-900/30 border border-blue-500 text-blue-100 font-orbitron hover:bg-blue-500 hover:text-white transition-all tracking-widest" data-text="init">INITIALIZE</button>
                 </div>
             </div>
+
+            <!-- //added on 18th feb start -->
+             <div id="view-htp" class="hidden absolute inset-0 z-40 bg-black/90 flex flex-col items-center justify-center fade-in backdrop-blur-sm">
+                
+                <div class="perspective-container max-w-4xl w-full h-full p-3 md:p-8">
+                    
+                    <div id="htp-main-card" class="glass-panel w-full h-full max-h-full corner-accent shadow-[0_0_50px_rgba(0,0,0,0.8)] relative bg-[var(--panel-bg)] tilt-card">
+                        
+                        <div class="tilt-content">
+                            
+                            <div class="p-3 md:p-6 border-b border-gray-700 shrink-0 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-2 bg-gray-900/50 rounded-t-lg">
+                                <div class="min-w-0">
+                                    <div class="font-mono text-[9px] md:text-[10px] text-[var(--neon-blue)] tracking-widest mb-1 animate-pulse truncate">>> SECURE CONNECTION ESTABLISHED</div>
+                                    <h2 class="font-orbitron text-xl md:text-3xl lg:text-4xl text-white tracking-wide md:tracking-widest drop-shadow-md leading-tight" data-text="htp_title">OPERATIONAL PROTOCOLS</h2>
+                                </div>
+                                <div class="font-mono text-[9px] md:text-[10px] text-gray-500 sm:text-right leading-tight shrink-0">
+                                    AUTH: VALID<span class="hidden sm:inline"><br></span><span class="sm:hidden"> // </span>SYS_VER: 2.0
+                                </div>
+                            </div>
+
+                            <div class="p-3 md:p-6 flex-1 min-h-0 overflow-y-auto custom-scroll flex flex-col gap-4 md:gap-6">
+                                
+                                <p class="font-mono text-xs md:text-sm text-gray-300 leading-relaxed border-l-2 border-[var(--neon-blue)] pl-3 bg-blue-900/10 py-2 md:py-3 shrink-0" data-text="htp_intro">
+                                    You are entering a high-stakes legal combat zone. Your objective is to survive encounters with law enforcement and corporate entities by making constitutionally sound decisions.
+                                </p>
+
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-5 shrink-0 pb-2">
+                                    <div class="bg-gray-900/80 border border-gray-800 p-3 md:p-4 relative group transition-colors hover:border-[var(--neon-red)] flex flex-col h-full" style="transform: translateZ(10px);">
+                                        <div class="absolute top-0 left-0 w-full h-0.5 bg-[var(--neon-red)] opacity-50 group-hover:opacity-100 transition-opacity shadow-[0_0_10px_var(--neon-red)]"></div>
+                                        <div class="font-orbitron text-[var(--neon-red)] text-sm md:text-base mb-1 md:mb-2 tracking-wider flex items-center gap-2">
+                                            <span class="animate-pulse drop-shadow-md">❤️</span> <span data-text="htp_rule1_title">INTEGRITY</span>
+                                        </div>
+                                        <div class="font-mono text-[10px] md:text-xs text-gray-400 leading-snug flex-grow" data-text="htp_rule1_desc">
+                                            You possess 3 lives. Unlawful compliance or rights violations result in integrity damage. Three strikes = Mission Failed.
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-gray-900/80 border border-gray-800 p-3 md:p-4 relative group transition-colors hover:border-[var(--neon-yellow)] flex flex-col h-full" style="transform: translateZ(10px);">
+                                        <div class="absolute top-0 left-0 w-full h-0.5 bg-[var(--neon-yellow)] opacity-50 group-hover:opacity-100 transition-opacity shadow-[0_0_10px_var(--neon-yellow)]"></div>
+                                        <div class="font-orbitron text-[var(--neon-yellow)] text-sm md:text-base mb-1 md:mb-2 tracking-wider flex items-center gap-2">
+                                            <span class="animate-pulse drop-shadow-md">⏱️</span> <span data-text="htp_rule2_title">URGENCY</span>
+                                        </div>
+                                        <div class="font-mono text-[10px] md:text-xs text-gray-400 leading-snug flex-grow" data-text="htp_rule2_desc">
+                                            Real-time encounters demand rapid response. Failing to act before the timer expires triggers a panic state and penalty.
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-gray-900/80 border border-gray-800 p-3 md:p-4 relative group transition-colors hover:border-[var(--neon-green)] flex flex-col h-full" style="transform: translateZ(10px);">
+                                        <div class="absolute top-0 left-0 w-full h-0.5 bg-[var(--neon-green)] opacity-50 group-hover:opacity-100 transition-opacity shadow-[0_0_10px_var(--neon-green)]"></div>
+                                        <div class="font-orbitron text-[var(--neon-green)] text-sm md:text-base mb-1 md:mb-2 tracking-wider flex items-center gap-2">
+                                            <span class="animate-pulse drop-shadow-md">⚖️</span> <span data-text="htp_rule3_title">TACTICS</span>
+                                        </div>
+                                        <div class="font-mono text-[10px] md:text-xs text-gray-400 leading-snug flex-grow" data-text="htp_rule3_desc">
+                                            Every choice is recorded. Assert your rights and gather evidence to build an ironclad Action Log for the final review.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-3 md:p-6 border-t border-gray-800 shrink-0 bg-black/40 rounded-b-lg">
+                                <button onclick="audio.play('click'); game.showModules()" class="w-full flex items-center justify-center px-4 py-3 md:py-4 font-orbitron font-bold text-[var(--neon-blue)] transition-all duration-300 bg-[var(--neon-blue)]/5 border border-[var(--neon-blue)] hover:bg-[var(--neon-blue)] hover:text-black hover:shadow-[0_0_20px_var(--neon-blue)] text-sm md:text-lg tracking-widest" data-text="htp_btn" style="transform: translateZ(20px);">
+                                    >> ACKNOWLEDGE & PROCEED
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- //end -->
 
             <!-- <div id="view-modules" class="hidden absolute inset-0 p-8 flex flex-col"> -->
             <div id="view-modules" class="hidden absolute inset-0 p-4 md:p-8 flex flex-col">
@@ -2171,7 +2280,19 @@
             operator: "OPERATOR", live: "LIVE ENCOUNTER",
             read_law: "READ THE LAW",
             pass: "PASSED", fail: "FAILED",
-            mission_acc: "MISSION PASSED", mission_fail: "MISSION FAILED"
+            mission_acc: "MISSION PASSED", mission_fail: "MISSION FAILED",
+
+            // --- NEW: HOW TO PLAY ---
+            htp_title: "OPERATIONAL PROTOCOLS",
+            htp_intro: "You are entering a high-stakes legal combat zone. Your objective is to survive encounters with law enforcement and corporate entities by making constitutionally sound decisions.",
+            htp_rule1_title: "INTEGRITY",
+            htp_rule1_desc: "You possess 3 lives. Unlawful compliance or rights violations result in integrity damage. Three strikes = Mission Failed.",
+            htp_rule2_title: "URGENCY",
+            htp_rule2_desc: "Real-time encounters demand rapid response. Failing to act before the timer expires triggers a panic state and penalty.",
+            htp_rule3_title: "TACTICS",
+            htp_rule3_desc: "Every choice is recorded. Assert your rights and gather evidence to build an ironclad Action Log for the final review.",
+            htp_btn: ">> ACKNOWLEDGE & PROCEED"
+            //end
         },
         es: {
             title: "KNOW YOUR RIGHTS", subtitle: "SIMULADOR LEGAL TÁCTICO",
@@ -2184,7 +2305,21 @@
             operator: "OPERADOR", live: "ENCUENTRO EN VIVO",
             read_law: "LEER LA LEY",
             pass: "SUPERÓ", fail: "FALLIDO",
-            mission_acc: "MISIÓN CUMPLIDA", mission_fail: "MISIÓN FALLIDA"
+            mission_acc: "MISIÓN CUMPLIDA", mission_fail: "MISIÓN FALLIDA",
+
+            // --- NEW: HOW TO PLAY ---
+            htp_title: "PROTOCOLOS OPERATIVOS",
+            htp_intro: "Estás entrando en una zona de combate legal de alto riesgo. Tu objetivo es sobrevivir a encuentros tomando decisiones constitucionales.",
+            htp_rule1_title: "INTEGRIDAD",
+            htp_rule1_desc: "Posees 3 vidas. El cumplimiento ilegal o las violaciones de derechos resultan en daño. Tres errores = Misión Fallida.",
+            htp_rule2_title: "URGENCIA",
+            htp_rule2_desc: "Los encuentros exigen respuesta rápida. No actuar antes de que expire el tiempo provoca un estado de pánico y penalización.",
+            htp_rule3_title: "TÁCTICAS",
+            htp_rule3_desc: "Cada elección se registra. Afirma tus derechos y reúne evidencia para construir un Registro de Acción blindado.",
+            htp_btn: ">> CONFIRMAR Y PROCEDER"
+            //end
+
+        
         }
     };
 
@@ -2244,10 +2379,24 @@ const game = {
             variableSpeedMax: 40  // Slower pauses
         });
         
-        game.showModules();
+        // game.showModules();
+        //added on 18th feb start
+        // --- CHANGED: Go to Briefing first, not modules ---
+        game.showHowToPlay();
+
+        //end
         audio.init();
         game.load();
     },
+
+    //added on 18th feb 26 start
+    showHowToPlay: () => {
+        game.hideAll();
+        document.getElementById('view-htp').classList.remove('hidden');
+        document.getElementById('view-htp').classList.add('flex');
+    },
+
+    //end
 
     // added on 02/05/26 start
     toggleLang: () => {
@@ -2884,7 +3033,7 @@ const game = {
     },
 
     hideAll: () => {
-        ['view-start', 'view-modules', 'view-levels', 'view-game', 'view-summary', 'view-feedback', 'view-dashboard'].forEach(id => {
+        ['view-start', 'view-htp', 'view-modules', 'view-levels', 'view-game', 'view-summary', 'view-feedback', 'view-dashboard'].forEach(id => {
             document.getElementById(id).classList.add('hidden');
             document.getElementById(id).classList.remove('flex');
         });
@@ -3604,6 +3753,9 @@ document.addEventListener("DOMContentLoaded", () => {
         noiseIntensity: 0.5,
         pillarRotation: 25
     });
+
+    // 3. Initialize 3D Tilted Card for Briefing Screen
+    new TiltedCard('htp-main-card', { maxTilt: 8, scale: 1.02 });
 });
 
 //end
@@ -3672,6 +3824,56 @@ class Typewriter {
         if (this.timeoutId) clearTimeout(this.timeoutId);
     }
 } 
+
+//end
+
+//added on 18th feb start
+/* ================= 3D TILT CARD EFFECT (Vanilla JS Port) ================= */
+class TiltedCard {
+    constructor(elementId, options = {}) {
+        this.element = document.getElementById(elementId);
+        if (!this.element) return;
+
+        this.maxTilt = options.maxTilt || 12; // Matches your rotateAmplitude
+        this.scale = options.scale || 1.02; // Matches your scaleOnHover
+
+        this.initEvents();
+    }
+
+    initEvents() {
+        // Only apply tilt on desktop (mouse devices). 
+        // 3D tilting on mobile touch screens interferes with scrolling.
+        this.element.addEventListener('mouseenter', (e) => {
+            if (window.innerWidth < 768) return; 
+            this.element.classList.add('tilting');
+        });
+
+        this.element.addEventListener('mousemove', (e) => {
+            if (window.innerWidth < 768) return;
+
+            const rect = this.element.getBoundingClientRect();
+            
+            // Calculate mouse position relative to center of card
+            const offsetX = e.clientX - rect.left - rect.width / 2;
+            const offsetY = e.clientY - rect.top - rect.height / 2;
+
+            // Normalize to percentage (-1 to 1) and multiply by max tilt
+            const rotateX = (offsetY / (rect.height / 2)) * -this.maxTilt;
+            const rotateY = (offsetX / (rect.width / 2)) * this.maxTilt;
+
+            // Apply 3D Transform
+            this.element.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(${this.scale}, ${this.scale}, ${this.scale})`;
+        });
+
+        this.element.addEventListener('mouseleave', () => {
+            if (window.innerWidth < 768) return;
+            
+            // Reset to flat with a smooth spring back
+            this.element.classList.remove('tilting');
+            this.element.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+        });
+    }
+}
 
 //end
 </script>
