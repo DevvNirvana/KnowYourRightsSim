@@ -562,6 +562,17 @@
             box-shadow: 0 0 10px var(--radio-color);
         }
 
+        /* Force icons to remain text/vectors, not colorful emojis */
+        #radio-mini-player button, 
+        #radio-btn-play {
+            font-family: sans-serif !important;
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+            /* This is the magic property for iOS */
+            font-variation-settings: "wght" 400;
+        }
+
 
         /* //end */
 
@@ -1087,12 +1098,12 @@
         <!-- //end -->
 
         <div id="radio-controls-wrapper" class="flex items-center gap-2 md:gap-1 shrink-0 pr-2 md:pr-0">
-            <button onclick="radioEngine.prevStation()" class="text-white hover:text-white/70 p-1 text-lg md:text-base transition-transform hover:scale-110 drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">⏮</button>
+            <button onclick="radioEngine.prevStation()" class="text-white hover:text-white/70 p-1 text-lg md:text-base transition-transform hover:scale-110 drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">⏮&#xFE0E;</button>
             <!-- <button id="radio-btn-play" onclick="radioEngine.toggle()" class="text-neon-red hover:text-neon-red/70 p-1 text-lg md:text-base transition-transform hover:scale-110 drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">⏸</button> -->
              <button onclick="radioEngine.toggle()" class="play-ring group transition-transform active:scale-95">
-                <span id="radio-btn-play" class="text-white group-hover:text-[var(--radio-color)] text-sm md:text-base drop-shadow-md">⏸</span>
+                <span id="radio-btn-play" class="text-white group-hover:text-[var(--radio-color)] text-sm md:text-base drop-shadow-md">⏸&#xFE0E;</span>
             </button>
-            <button onclick="radioEngine.nextStation()" class="text-white hover:text-white/70 p-1 text-lg md:text-base transition-transform hover:scale-110 drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">⏭</button>
+            <button onclick="radioEngine.nextStation()" class="text-white hover:text-white/70 p-1 text-lg md:text-base transition-transform hover:scale-110 drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">⏭&#xFE0E;</button>
         </div>
     </div>
 
@@ -2567,13 +2578,13 @@ const radioEngine = {
             color: "#fcee0a" 
         },
         // Station 1-7: Live Rekt Network Streams (Single Strings)
-        { id: 'chillsynth', name: "CHILLSYNTH", url: "https://stream.rekt.network/chillsynth.ogg", color: "#00f3ff" },
-        { id: 'nightride', name: "NIGHTRIDE FM", url: "https://stream.rekt.network/nightride.ogg", color: "#ff00ff" },
-        { id: 'darksynth', name: "DARKSYNTH", url: "https://stream.rekt.network/darksynth.ogg", color: "#ff003c" },
-        { id: 'datawave', name: "DATAWAVE", url: "https://stream.rekt.network/datawave.ogg", color: "#0aff00" },
-        { id: 'ebsm', name: "EBSM", url: "https://stream.rekt.network/ebsm.ogg", color: "#ff6600" },
-        { id: 'horrorsynth', name: "HORRORSYNTH", url: "https://stream.rekt.network/horrorsynth.ogg", color: "#9900ff" },
-        { id: 'spacesynth', name: "SPACESYNTH FM", url: "https://stream.rekt.network/spacesynth.ogg", color: "#0066ff" }
+        { id: 'chillsynth', name: "CHILLSYNTH", url: "https://stream.rekt.network/chillsynth.mp3", color: "#00f3ff" },
+        { id: 'nightride', name: "NIGHTRIDE FM", url: "https://stream.rekt.network/nightride.mp3", color: "#ff00ff" },
+        { id: 'darksynth', name: "DARKSYNTH", url: "https://stream.rekt.network/darksynth.mp3", color: "#ff003c" },
+        { id: 'datawave', name: "DATAWAVE", url: "https://stream.rekt.network/datawave.mp3", color: "#0aff00" },
+        { id: 'ebsm', name: "EBSM", url: "https://stream.rekt.network/ebsm.mp3", color: "#ff6600" },
+        { id: 'horrorsynth', name: "HORRORSYNTH", url: "https://stream.rekt.network/horrorsynth.mp3", color: "#9900ff" },
+        { id: 'spacesynth', name: "SPACESYNTH FM", url: "https://stream.rekt.network/spacesynth.mp3", color: "#0066ff" }
     ],
     currentIndex: 0,
     currentSubIndex: 0, // <-- NEW: Tracks which song in the playlist is currently playing
@@ -2682,14 +2693,14 @@ const radioEngine = {
             wrapper.classList.add('playing'); // Start the ring pulse
             // PAUSE ICON: Remove nudge, set text
             btn.classList.remove('play-icon-nudge');
-            btn.innerText = '⏸';
+            btn.innerText = '⏸&#xFE0E;';
         } else {
             eq.classList.add('eq-paused', 'opacity-40');
             eq.classList.remove('opacity-100');
             wrapper.classList.remove('playing'); // Stop the ring pulse
             // PLAY ICON: Add nudge for optical centering, set text
             btn.classList.add('play-icon-nudge');
-            btn.innerText = '▶';
+            btn.innerText = '▶&#xFE0E;';
         }
     }
 };
