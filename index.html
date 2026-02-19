@@ -3891,47 +3891,55 @@ class TiltedCard {
 
 <!-- //added on 18 feb start -->
  <script>
-    /* ================= PWA INSTALL MANAGER ================= */
+/* ================= PWA INSTALL MANAGER (With iOS Support) ================= */
 let deferredPrompt;
 const installBtn = document.getElementById('btn-install');
 
-// 1. Catch the browser's install event
+// Detect iOS devices
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+// Detect if app is already installed (running in standalone mode)
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+// 1. Android/Chrome Flow (Catch the native prompt)
 window.addEventListener('beforeinstallprompt', (e) => {
-    // Prevent the default mini-infobar from appearing
     e.preventDefault();
-    // Stash the event so it can be triggered later
     deferredPrompt = e;
-    // Show our custom Cyberpunk button
     installBtn.classList.remove('hidden');
 });
 
-// 2. Handle the click on our custom button
+// 2. iOS Flow (Manually show button if not installed)
+if (isIOS && !isStandalone) {
+    installBtn.classList.remove('hidden');
+}
+
+// 3. Handle the Button Click
 installBtn.addEventListener('click', async () => {
-    if (!deferredPrompt) return;
+    audio.play('click'); 
     
-    audio.play('click'); // Play your UI sound
-    
-    // Show the actual native install prompt
-    deferredPrompt.prompt();
-    
-    // Wait for the user to respond to the prompt
-    const { outcome } = await deferredPrompt.userChoice;
-    
-    // If they installed it, or cancelled, we hide the button
-    if (outcome === 'accepted') {
-        installBtn.classList.add('hidden');
+    if (isIOS) {
+        // iOS Fallback: Show a stylish custom alert
+        const iosMsg = game.state.lang === 'en' 
+            ? "TO DEPLOY:\nTap the Share icon at the bottom of Safari, then select 'Add to Home Screen'." 
+            : "PARA INSTALAR:\nToca el icono Compartir en Safari, luego selecciona 'Agregar a inicio'.";
+        alert(iosMsg); // You can replace this with a custom modal later if you want!
+        return;
     }
-    
-    // Clear the saved prompt
-    deferredPrompt = null;
+
+    if (deferredPrompt) {
+        // Android/Chrome: Show the native prompt
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+            installBtn.classList.add('hidden');
+        }
+        deferredPrompt = null;
+    }
 });
 
-// 3. Listen for successful installation (from any source)
+// 4. Hide button permanently if installed
 window.addEventListener('appinstalled', () => {
-    // Hide the button permanently once installed
     installBtn.classList.add('hidden');
     deferredPrompt = null;
-    console.log('System successfully deployed to local host.');
 });
  </script>
 
