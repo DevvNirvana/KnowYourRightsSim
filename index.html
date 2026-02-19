@@ -574,6 +574,18 @@
         }
 
 
+        /* /* Added by t start */
+        #radio-mini-player {
+            /* Respects iOS bottom navigation bar */
+            bottom: calc(0.5rem + env(safe-area-inset-bottom)) !important;
+        }
+
+        /* Ensure the scene transition overlay is always the absolute top layer */
+        #scene-transition {
+            z-index: 9999;
+        }
+
+
         /* //end */
 
     </style>
@@ -685,7 +697,7 @@
                                 </div> -->
                             </div>
 
-                            <div class="p-3 md:p-6 flex-1 min-h-0 overflow-y-auto custom-scroll flex flex-col gap-4 md:gap-6">
+                            <div class="p-3 md:p-6 flex-1 min-h-0 overflow-y-auto custom-scroll flex flex-col gap-4 md:gap-6 pb-28">
                                 
                                 <p class="font-mono text-xs md:text-sm text-gray-300 leading-relaxed border-l-2 border-[var(--neon-blue)] pl-3 bg-blue-900/10 py-2 md:py-3 shrink-0" data-text="htp_intro">
                                     You are entering a high-stakes legal combat zone. Your objective is to survive encounters with law enforcement and corporate entities by making constitutionally sound decisions.
@@ -2700,7 +2712,7 @@ const radioEngine = {
             wrapper.classList.remove('playing'); // Stop the ring pulse
             // PLAY ICON: Add nudge for optical centering, set text
             btn.classList.add('play-icon-nudge');
-            btn.innerText = '\u23F8\uFE0E';
+            btn.innerText = '\u25B6\uFE0E';
         }
     }
 };
